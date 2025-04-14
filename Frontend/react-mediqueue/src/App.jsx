@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -9,6 +9,7 @@ import "./App.css";
 import HomePage from "./pages/HomePage";
 import PatientDashboard from "./pages/PatientDashboard";
 import DoctorDashboard from "./pages/DoctorDashboard";
+import ClinicDetails from "./pages/ClinicDetails";
 import NotFound from "./pages/NotFound";
 
 // Create a protected route component
@@ -47,6 +48,15 @@ function App() {
           element={
             <ProtectedRoute>
               <DoctorDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/clinic/:clinicId"
+          element={
+            <ProtectedRoute>
+              <ClinicDetails />
             </ProtectedRoute>
           }
         />

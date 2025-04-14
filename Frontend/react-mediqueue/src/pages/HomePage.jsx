@@ -4,15 +4,23 @@ import Footer from "../components/Footer";
 
 function HomePage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isDoctorAuthenticated, setIsDoctorAuthenticated] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showDoctorLoginModal, setShowDoctorLoginModal] = useState(false);
   const navigate = useNavigate();
 
   // Check if user is authenticated on component mount
   useEffect(() => {
-    // This would typically check a JWT token or session
+    // Check patient authentication
     const token = localStorage.getItem("authToken");
     if (token) {
       setIsAuthenticated(true);
+    }
+
+    // Check doctor authentication
+    const doctorToken = localStorage.getItem("doctorAuthToken");
+    if (doctorToken) {
+      setIsDoctorAuthenticated(true);
     }
   }, []);
 
@@ -26,8 +34,22 @@ function HomePage() {
     }
   };
 
+  const handleDoctorPortalClick = () => {
+    if (isDoctorAuthenticated) {
+      // Navigate to doctor dashboard if authenticated
+      navigate("/doctor-dashboard");
+    } else {
+      // Show doctor login modal if not authenticated
+      setShowDoctorLoginModal(true);
+    }
+  };
+
   const handleCloseModal = () => {
     setShowLoginModal(false);
+  };
+
+  const handleCloseDoctorModal = () => {
+    setShowDoctorLoginModal(false);
   };
 
   const handleLogin = e => {
@@ -35,9 +57,21 @@ function HomePage() {
     // In a real app, you'd validate credentials and make an API call
     // For now, just simulate a successful login
     localStorage.setItem("authToken", "sample-token");
+    localStorage.setItem("userRole", "patient");
     setIsAuthenticated(true);
     setShowLoginModal(false);
     navigate("/patient-dashboard");
+  };
+
+  const handleDoctorLogin = e => {
+    e.preventDefault();
+    // In a real app, you'd validate doctor credentials and make an API call
+    // For now, just simulate a successful login
+    localStorage.setItem("doctorAuthToken", "sample-doctor-token");
+    localStorage.setItem("userRole", "doctor");
+    setIsDoctorAuthenticated(true);
+    setShowDoctorLoginModal(false);
+    navigate("/doctor-dashboard");
   };
 
   return (
@@ -111,7 +145,10 @@ function HomePage() {
               </div>
             </button>
 
-            <button className="group bg-white p-8 rounded-xl border border-gray-200 shadow-md hover:shadow-lg transition duration-300 hover:-translate-y-2 w-full md:w-80">
+            <button
+              onClick={handleDoctorPortalClick}
+              className="group bg-white p-8 rounded-xl border border-gray-200 shadow-md hover:shadow-lg transition duration-300 hover:-translate-y-2 w-full md:w-80"
+            >
               <div className="text-center">
                 <span className="text-5xl mb-4 block">👨‍⚕️</span>
                 <h3 className="text-xl font-semibold text-blue-600 mb-2">
@@ -164,7 +201,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Login Modal */}
+      {/* Patient Login Modal */}
       {showLoginModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
@@ -251,6 +288,105 @@ function HomePage() {
                   Don't have an account?{" "}
                   <a href="#" className="text-blue-600 hover:underline">
                     Sign up
+                  </a>
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Doctor Login Modal */}
+      {showDoctorLoginModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-blue-600">Doctor Login</h2>
+              <button
+                onClick={handleCloseDoctorModal}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+
+            <form onSubmit={handleDoctorLogin}>
+              <div className="mb-4">
+                <label
+                  htmlFor="doctor-email"
+                  className="block text-gray-700 mb-2"
+                >
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  id="doctor-email"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="doctor@example.com"
+                  required
+                />
+              </div>
+
+              <div className="mb-6">
+                <label
+                  htmlFor="doctor-password"
+                  className="block text-gray-700 mb-2"
+                >
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="doctor-password"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="********"
+                  required
+                />
+              </div>
+
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center">
+                  <input
+                    id="doctor-remember-me"
+                    type="checkbox"
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <label
+                    htmlFor="doctor-remember-me"
+                    className="ml-2 block text-sm text-gray-700"
+                  >
+                    Remember me
+                  </label>
+                </div>
+                <a href="#" className="text-sm text-blue-600 hover:underline">
+                  Forgot password?
+                </a>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition"
+              >
+                Sign In
+              </button>
+
+              <div className="mt-4 text-center">
+                <p className="text-gray-600">
+                  Don't have an account?{" "}
+                  <a href="#" className="text-blue-600 hover:underline">
+                    Contact administration
                   </a>
                 </p>
               </div>
