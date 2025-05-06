@@ -1,10 +1,40 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import PatientNavbar from "../components/PatientNavbar";
 import NearbyClinics from "../components/NearbyClinics";
+import { getUserProfile } from "../services/authService";
 
 const PatientDashboard = () => {
   const [selectedLocation, setSelectedLocation] = useState("Hamirpur");
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // Check if user is authenticated
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          navigate("/");
+          return;
+        }
+
+        const userProfile = await getUserProfile();
+        setUserData(userProfile);
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+        // If there's an authentication error, redirect to homepage
+        if (error.response && error.response.status === 401) {
+          navigate("/");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [navigate]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -12,15 +42,26 @@ const PatientDashboard = () => {
       <PatientNavbar
         selectedLocation={selectedLocation}
         setSelectedLocation={setSelectedLocation}
+        userData={userData}
       />
 
       {/* Main Content */}
       <div className="container mx-auto px-6 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">Welcome, John!</h1>
-          <p className="text-gray-600 mt-1">
-            Here's your health at a glance in {selectedLocation}
-          </p>
+          {loading ? (
+            <div className="flex items-center">
+              <div className="animate-pulse h-8 w-60 bg-gray-200 rounded"></div>
+            </div>
+          ) : (
+            <>
+              <h1 className="text-3xl font-bold text-gray-800">
+                Welcome, {userData?.name || "Patient"}!
+              </h1>
+              <p className="text-gray-600 mt-1">
+                Here's your health at a glance in {selectedLocation}
+              </p>
+            </>
+          )}
         </div>
 
         {/* Horizontally aligned cards */}

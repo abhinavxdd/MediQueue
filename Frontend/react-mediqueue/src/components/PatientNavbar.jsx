@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const PatientNavbar = ({ selectedLocation, setSelectedLocation }) => {
+const PatientNavbar = ({ selectedLocation, setSelectedLocation, userData }) => {
   const navigate = useNavigate();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -14,6 +14,7 @@ const PatientNavbar = ({ selectedLocation, setSelectedLocation }) => {
   // Function to handle logout
   const handleLogout = () => {
     localStorage.removeItem("authToken");
+    localStorage.removeItem("userRole");
     navigate("/");
   };
 
@@ -21,6 +22,17 @@ const PatientNavbar = ({ selectedLocation, setSelectedLocation }) => {
   const handleLocationSelect = location => {
     setSelectedLocation(location);
     setShowLocationDropdown(false);
+  };
+
+  // Function to get user initials
+  const getUserInitials = () => {
+    if (!userData || !userData.name) return "U"; // Default if no name available
+
+    const nameParts = userData.name.split(" ");
+    if (nameParts.length === 1) return nameParts[0].charAt(0).toUpperCase();
+    return (
+      nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0)
+    ).toUpperCase();
   };
 
   return (
@@ -178,11 +190,17 @@ const PatientNavbar = ({ selectedLocation, setSelectedLocation }) => {
                   onClick={() => setShowProfileMenu(!showProfileMenu)}
                 >
                   <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                    <span className="text-blue-600 font-medium">JP</span>
+                    <span className="text-blue-600 font-medium">
+                      {getUserInitials()}
+                    </span>
                   </div>
                   <div className="hidden md:block text-left">
-                    <p className="text-sm font-medium">John Patient</p>
-                    <p className="text-xs text-gray-500">Patient</p>
+                    <p className="text-sm font-medium">
+                      {userData ? userData.name : "Loading..."}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {userData?.role || "Patient"}
+                    </p>
                   </div>
                   <svg
                     className="w-4 h-4 text-gray-500"

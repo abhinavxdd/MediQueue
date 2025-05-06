@@ -1,12 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
+import { loginUser, loginDoctor, registerUser } from "../services/authService";
 
 function HomePage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isDoctorAuthenticated, setIsDoctorAuthenticated] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showDoctorLoginModal, setShowDoctorLoginModal] = useState(false);
+  const [showSignupModal, setShowSignupModal] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [doctorEmail, setDoctorEmail] = useState("");
+  const [doctorPassword, setDoctorPassword] = useState("");
+  const [signupName, setSignupName] = useState("");
+  const [signupEmail, setSignupEmail] = useState("");
+  const [signupPassword, setSignupPassword] = useState("");
+  const [signupConfirmPassword, setSignupConfirmPassword] = useState("");
+  const [signupPhone, setSignupPhone] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   // Check if user is authenticated on component mount
@@ -46,32 +59,103 @@ function HomePage() {
 
   const handleCloseModal = () => {
     setShowLoginModal(false);
+    setError("");
+    setEmail("");
+    setPassword("");
   };
 
   const handleCloseDoctorModal = () => {
     setShowDoctorLoginModal(false);
+    setError("");
+    setDoctorEmail("");
+    setDoctorPassword("");
   };
 
-  const handleLogin = e => {
-    e.preventDefault();
-    // In a real app, you'd validate credentials and make an API call
-    // For now, just simulate a successful login
-    localStorage.setItem("authToken", "sample-token");
-    localStorage.setItem("userRole", "patient");
-    setIsAuthenticated(true);
-    setShowLoginModal(false);
-    navigate("/patient-dashboard");
+  const handleCloseSignupModal = () => {
+    setShowSignupModal(false);
+    setError("");
+    setSignupName("");
+    setSignupEmail("");
+    setSignupPassword("");
+    setSignupConfirmPassword("");
+    setSignupPhone("");
   };
 
-  const handleDoctorLogin = e => {
+  const handleLogin = async e => {
     e.preventDefault();
-    // In a real app, you'd validate doctor credentials and make an API call
-    // For now, just simulate a successful login
-    localStorage.setItem("doctorAuthToken", "sample-doctor-token");
-    localStorage.setItem("userRole", "doctor");
-    setIsDoctorAuthenticated(true);
-    setShowDoctorLoginModal(false);
-    navigate("/doctor-dashboard");
+    setError("");
+    setIsLoading(true);
+
+    try {
+      await loginUser(email, password);
+      setIsAuthenticated(true);
+      setShowLoginModal(false);
+      navigate("/patient-dashboard");
+    } catch (error) {
+      setError(
+        error.message || "Failed to login. Please check your credentials."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDoctorLogin = async e => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    try {
+      await loginDoctor(doctorEmail, doctorPassword);
+      setIsDoctorAuthenticated(true);
+      setShowDoctorLoginModal(false);
+      navigate("/doctor-dashboard");
+    } catch (error) {
+      setError(
+        error.message || "Failed to login. Please check your credentials."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSignup = async e => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    // Basic validation
+    if (signupPassword !== signupConfirmPassword) {
+      setError("Passwords don't match");
+      setIsLoading(false);
+      return;
+    }
+
+    if (signupPassword.length < 6) {
+      setError("Password must be at least 6 characters");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const userData = {
+        name: signupName,
+        email: signupEmail,
+        password: signupPassword,
+        phone: signupPhone,
+      };
+
+      await registerUser(userData);
+      // Auto login after successful registration
+      await loginUser(signupEmail, signupPassword);
+      setIsAuthenticated(true);
+      setShowSignupModal(false);
+      navigate("/patient-dashboard");
+    } catch (error) {
+      setError(error.message || "Failed to create account. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -109,10 +193,16 @@ function HomePage() {
           </div>
 
           <div className="flex space-x-4">
-            <button className="px-4 py-2 border border-blue-600 text-blue-600 font-medium rounded-md hover:bg-blue-50 transition">
+            <button
+              onClick={() => setShowLoginModal(true)}
+              className="px-4 py-2 border border-blue-600 text-blue-600 font-medium rounded-md hover:bg-blue-50 transition"
+            >
               Login
             </button>
-            <button className="px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition">
+            <button
+              onClick={() => setShowSignupModal(true)}
+              className="px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition"
+            >
               Sign Up
             </button>
           </div>
@@ -230,6 +320,12 @@ function HomePage() {
               </button>
             </div>
 
+            {error && (
+              <div className="mb-4 bg-red-50 text-red-600 p-3 rounded-md text-sm">
+                {error}
+              </div>
+            )}
+
             <form onSubmit={handleLogin}>
               <div className="mb-4">
                 <label htmlFor="email" className="block text-gray-700 mb-2">
@@ -240,6 +336,8 @@ function HomePage() {
                   id="email"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="your@email.com"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -253,6 +351,8 @@ function HomePage() {
                   id="password"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="********"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
                   required
                 />
               </div>
@@ -278,9 +378,12 @@ function HomePage() {
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition"
+                disabled={isLoading}
+                className={`w-full ${
+                  isLoading ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
+                } text-white py-2 px-4 rounded-md transition`}
               >
-                Sign In
+                {isLoading ? "Signing in..." : "Sign In"}
               </button>
 
               <div className="mt-4 text-center">
@@ -323,6 +426,12 @@ function HomePage() {
               </button>
             </div>
 
+            {error && (
+              <div className="mb-4 bg-red-50 text-red-600 p-3 rounded-md text-sm">
+                {error}
+              </div>
+            )}
+
             <form onSubmit={handleDoctorLogin}>
               <div className="mb-4">
                 <label
@@ -336,6 +445,8 @@ function HomePage() {
                   id="doctor-email"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="doctor@example.com"
+                  value={doctorEmail}
+                  onChange={e => setDoctorEmail(e.target.value)}
                   required
                 />
               </div>
@@ -352,6 +463,8 @@ function HomePage() {
                   id="doctor-password"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="********"
+                  value={doctorPassword}
+                  onChange={e => setDoctorPassword(e.target.value)}
                   required
                 />
               </div>
@@ -377,9 +490,12 @@ function HomePage() {
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition"
+                disabled={isLoading}
+                className={`w-full ${
+                  isLoading ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
+                } text-white py-2 px-4 rounded-md transition`}
               >
-                Sign In
+                {isLoading ? "Signing in..." : "Sign In"}
               </button>
 
               <div className="mt-4 text-center">
@@ -388,6 +504,163 @@ function HomePage() {
                   <a href="#" className="text-blue-600 hover:underline">
                     Contact administration
                   </a>
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Patient Signup Modal */}
+      {showSignupModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-blue-600">
+                Create Account
+              </h2>
+              <button
+                onClick={handleCloseSignupModal}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+
+            {error && (
+              <div className="mb-4 bg-red-50 text-red-600 p-3 rounded-md text-sm">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleSignup}>
+              <div className="mb-4">
+                <label
+                  htmlFor="signup-name"
+                  className="block text-gray-700 mb-2"
+                >
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  id="signup-name"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="John Smith"
+                  value={signupName}
+                  onChange={e => setSignupName(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label
+                  htmlFor="signup-email"
+                  className="block text-gray-700 mb-2"
+                >
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  id="signup-email"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="your@email.com"
+                  value={signupEmail}
+                  onChange={e => setSignupEmail(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label
+                  htmlFor="signup-phone"
+                  className="block text-gray-700 mb-2"
+                >
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  id="signup-phone"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="9876543210"
+                  value={signupPhone}
+                  onChange={e => setSignupPhone(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label
+                  htmlFor="signup-password"
+                  className="block text-gray-700 mb-2"
+                >
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="signup-password"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="********"
+                  value={signupPassword}
+                  onChange={e => setSignupPassword(e.target.value)}
+                  required
+                  minLength="6"
+                />
+              </div>
+
+              <div className="mb-6">
+                <label
+                  htmlFor="signup-confirm-password"
+                  className="block text-gray-700 mb-2"
+                >
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  id="signup-confirm-password"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="********"
+                  value={signupConfirmPassword}
+                  onChange={e => setSignupConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className={`w-full ${
+                  isLoading ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
+                } text-white py-2 px-4 rounded-md transition`}
+              >
+                {isLoading ? "Creating Account..." : "Create Account"}
+              </button>
+
+              <div className="mt-4 text-center">
+                <p className="text-gray-600">
+                  Already have an account?{" "}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleCloseSignupModal();
+                      setShowLoginModal(true);
+                    }}
+                    className="text-blue-600 hover:underline"
+                  >
+                    Sign in
+                  </button>
                 </p>
               </div>
             </form>
