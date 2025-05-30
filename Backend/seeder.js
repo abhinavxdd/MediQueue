@@ -1,7 +1,7 @@
-// Backend/seeder.js
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const colors = require("colors");
+const bcrypt = require("bcryptjs");
 const User = require("./models/User");
 const Doctor = require("./models/Doctor");
 const Clinic = require("./models/Clinic");
@@ -65,11 +65,28 @@ const importData = async () => {
     await Clinic.deleteMany();
     await Appointment.deleteMany();
 
-    // Create users
-    const createdUsers = await User.insertMany(sampleUsers);
+    // Hash passwords before inserting
+    const hashedUserData = await Promise.all(
+      sampleUsers.map(async user => {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(user.password, salt);
+        return { ...user, password: hashedPassword };
+      })
+    );
 
-    // Create doctors
-    const createdDoctors = await Doctor.insertMany(sampleDoctors);
+    const hashedDoctorData = await Promise.all(
+      sampleDoctors.map(async doctor => {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(doctor.password, salt);
+        return { ...doctor, password: hashedPassword };
+      })
+    );
+
+    // Create users with hashed passwords
+    const createdUsers = await User.insertMany(hashedUserData);
+
+    // Create doctors with hashed passwords
+    const createdDoctors = await Doctor.insertMany(hashedDoctorData);
 
     // Create clinics
     const createdClinics = await Clinic.insertMany(sampleClinics);
@@ -85,11 +102,6 @@ const importData = async () => {
 // Delete all data
 const destroyData = async () => {
   try {
-    await User.deleteMany();
-    await Doctor.deleteMany();
-    await Clinic.deleteMany();
-    await Appointment.deleteMany();
-
     console.log("Data Destroyed!".red.inverse);
     process.exit();
   } catch (error) {

@@ -22,20 +22,24 @@ function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Check if user is authenticated on component mount
+  // Check if user is authenticated on component mount and redirect accordingly
   useEffect(() => {
     // Check patient authentication
     const token = localStorage.getItem("authToken");
     if (token) {
-      setIsAuthenticated(true);
+      // Redirect to patient dashboard if patient is logged in
+      navigate("/patient-dashboard");
+      return;
     }
 
     // Check doctor authentication
     const doctorToken = localStorage.getItem("doctorAuthToken");
     if (doctorToken) {
-      setIsDoctorAuthenticated(true);
+      // Redirect to doctor dashboard if doctor is logged in
+      navigate("/doctor-dashboard");
+      return;
     }
-  }, []);
+  }, [navigate]);
 
   const handlePatientPortalClick = () => {
     if (isAuthenticated) {
@@ -87,6 +91,11 @@ function HomePage() {
     setIsLoading(true);
 
     try {
+      // Clear any existing doctor authentication first to ensure only one login type
+      localStorage.removeItem("doctorAuthToken");
+      localStorage.removeItem("userRole");
+
+      // Login as patient
       await loginUser(email, password);
       setIsAuthenticated(true);
       setShowLoginModal(false);
@@ -106,6 +115,11 @@ function HomePage() {
     setIsLoading(true);
 
     try {
+      // Clear any existing patient authentication first to ensure only one login type
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("userRole");
+
+      // Login as doctor
       await loginDoctor(doctorEmail, doctorPassword);
       setIsDoctorAuthenticated(true);
       setShowDoctorLoginModal(false);
@@ -138,6 +152,11 @@ function HomePage() {
     }
 
     try {
+      // Clear any existing authentication tokens
+      localStorage.removeItem("doctorAuthToken");
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("userRole");
+
       const userData = {
         name: signupName,
         email: signupEmail,
