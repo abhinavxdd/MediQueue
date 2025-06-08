@@ -1,91 +1,170 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DoctorNavbar from "../components/DoctorNavbar";
 import Footer from "../components/Footer";
+import { getDoctorProfile } from "../services/authService";
+import { getDoctorAppointments } from "../services/appointmentService";
 
 const DoctorDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [doctorData, setDoctorData] = useState(null);
+  const [appointments, setAppointments] = useState([]);
+  const [dashboardStats, setDashboardStats] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Mock data for dashboard
-  const dashboardStats = [
-    {
-      title: "Today's Appointments",
-      value: 8,
-      icon: "calendar",
-      color: "blue",
-    },
-    { title: "Total Patients", value: 243, icon: "users", color: "green" },
-    { title: "Pending Reports", value: 5, icon: "document", color: "yellow" },
-    { title: "Completed Today", value: 3, icon: "check", color: "indigo" },
-  ];
+  // Fetch doctor profile and appointments
+  useEffect(() => {
+    const fetchDoctorData = async () => {
+      try {
+        // Check if doctor is authenticated
+        const token = localStorage.getItem("doctorAuthToken");
+        const role = localStorage.getItem("userRole");
 
-  const upcomingAppointments = [
-    {
-      id: 1,
-      patient: "Emily Johnson",
-      time: "09:00 AM",
-      date: "Today",
-      type: "Regular Checkup",
-      status: "Confirmed",
-    },
-    {
-      id: 2,
-      patient: "Michael Smith",
-      time: "10:30 AM",
-      date: "Today",
-      type: "Root Canal",
-      status: "Confirmed",
-    },
-    {
-      id: 3,
-      patient: "Sophia Davis",
-      time: "11:45 AM",
-      date: "Today",
-      type: "Consultation",
-      status: "Confirmed",
-    },
-    {
-      id: 4,
-      patient: "Daniel Brown",
-      time: "02:15 PM",
-      date: "Today",
-      type: "Teeth Cleaning",
-      status: "Confirmed",
-    },
-    {
-      id: 5,
-      patient: "Olivia Wilson",
-      time: "03:30 PM",
-      date: "Today",
-      type: "Cavity Filling",
-      status: "Confirmed",
-    },
-  ];
+        console.log("Doctor dashboard auth check:", {
+          hasToken: !!token,
+          userRole: role,
+        });
 
-  const recentPatients = [
-    {
-      id: 101,
-      name: "James Taylor",
-      age: 42,
-      lastVisit: "2023-06-18",
-      condition: "Dental Crown",
-    },
-    {
-      id: 102,
-      name: "Isabella Martinez",
-      age: 28,
-      lastVisit: "2023-06-17",
-      condition: "Teeth Whitening",
-    },
-    {
-      id: 103,
-      name: "William Johnson",
-      age: 35,
-      lastVisit: "2023-06-15",
-      condition: "Dental Implant",
-    },
-  ];
+        if (!token || role !== "doctor") {
+          console.log("No doctor token or wrong role, redirecting to homepage");
+          navigate("/");
+          return;
+        }
+
+        // Get doctor profile
+        const profileData = await getDoctorProfile();
+        setDoctorData(profileData);
+
+        // Get all appointments for this doctor
+        const appointmentsData = await getDoctorAppointments();
+        setAppointments(appointmentsData);
+
+        // Calculate dashboard stats from the appointments
+        calculateDashboardStats(appointmentsData);
+      } catch (error) {
+        console.error("Error fetching doctor data:", error);
+        setError("Failed to load your dashboard data. Please try again later.");
+
+        // If token is invalid, clear it and redirect
+        if (
+          error.message === "Not authorized, token failed" ||
+          error.message === "Not authorized, no token"
+        ) {
+          localStorage.removeItem("doctorAuthToken");
+          localStorage.removeItem("userRole");
+          navigate("/");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDoctorData();
+  }, [navigate]);
+
+  // Calculate stats based on actual appointment data
+  const calculateDashboardStats = appointmentsData => {
+    const today = new Date().toISOString().split("T")[0]; // Today's date as YYYY-MM-DD
+
+    // Count today's appointments
+    const todaysAppointments = appointmentsData.filter(
+      appointment =>
+        new Date(appointment.date).toISOString().split("T")[0] === today
+    );
+
+    // Count total unique patients
+    const uniquePatients = [
+      ...new Set(appointmentsData.map(a => a.patient._id)),
+    ].length;
+
+    // Count completed appointments today
+    const completedToday = appointmentsData.filter(
+      appointment =>
+        new Date(appointment.date).toISOString().split("T")[0] === today &&
+        appointment.status === "completed"
+    );
+
+    // Generate stats
+    setDashboardStats([
+      {
+        title: "Today's Appointments",
+        value: todaysAppointments.length,
+        icon: "calendar",
+        color: "blue",
+      },
+      {
+        title: "Total Patients",
+        value: uniquePatients,
+        icon: "users",
+        color: "green",
+      },
+      {
+        title: "Pending Reports",
+        value: appointmentsData.filter(a => a.status === "scheduled").length,
+        icon: "document",
+        color: "yellow",
+      },
+      {
+        title: "Completed Today",
+        value: completedToday.length,
+        icon: "check",
+        color: "indigo",
+      },
+    ]);
+  };
+
+  // Get today's appointments
+  const getTodaysAppointments = () => {
+    const today = new Date().toISOString().split("T")[0];
+    return appointments
+      .filter(
+        appointment =>
+          new Date(appointment.date).toISOString().split("T")[0] === today
+      )
+      .sort((a, b) => {
+        // Sort by time
+        return a.time.localeCompare(b.time);
+      });
+  };
+
+  // Get recent patients (unique patients from recent appointments)
+  const getRecentPatients = () => {
+    const uniquePatients = [];
+    const patientMap = new Map();
+
+    // Create a map of patients with their latest appointment
+    appointments.forEach(appointment => {
+      const patientId = appointment.patient._id;
+      if (
+        !patientMap.has(patientId) ||
+        new Date(appointment.date) > new Date(patientMap.get(patientId).date)
+      ) {
+        patientMap.set(patientId, {
+          id: patientId,
+          name: appointment.patient.name,
+          lastVisit: new Date(appointment.date).toLocaleDateString(),
+          condition: appointment.reason,
+          // Approximate age might not be available from API
+          // This is optional and can be removed if not available
+          age: "N/A",
+        });
+      }
+    });
+
+    // Convert map to array
+    patientMap.forEach(patient => uniquePatients.push(patient));
+
+    // Return most recent patients first (up to 5)
+    return uniquePatients.slice(0, 5);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("doctorAuthToken");
+    localStorage.removeItem("userRole");
+    navigate("/");
+  };
 
   // Icons for dashboard stats
   const renderIcon = (iconName, color) => {
@@ -161,11 +240,32 @@ const DoctorDashboard = () => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("doctorAuthToken");
-    localStorage.removeItem("userRole");
-    navigate("/");
-  };
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex justify-center items-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex justify-center items-center">
+        <div className="bg-red-50 p-4 rounded-md">
+          <p className="text-red-600">{error}</p>
+          <button
+            onClick={() => navigate("/")}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md"
+          >
+            Return to Home
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const todaysAppointments = getTodaysAppointments();
+  const recentPatients = getRecentPatients();
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -173,12 +273,13 @@ const DoctorDashboard = () => {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onLogout={handleLogout}
+        doctorData={doctorData}
       />
 
       <main className="flex-grow container mx-auto px-4 sm:px-6 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">
-            Welcome, Dr. Sarah Johnson!
+            Welcome, {doctorData?.name || "Doctor"}!
           </h1>
           <p className="mt-1 text-lg text-gray-600">
             Here's your practice overview for today
@@ -222,61 +323,76 @@ const DoctorDashboard = () => {
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Patient
-                    </th>
-                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Time
-                    </th>
-                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Type
-                    </th>
-                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {upcomingAppointments.map(appointment => (
-                    <tr key={appointment.id} className="hover:bg-gray-50">
-                      <td className="py-4 px-6 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
-                          {appointment.patient}
-                        </div>
-                      </td>
-                      <td className="py-4 px-6 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {appointment.time}
-                        </div>
-                      </td>
-                      <td className="py-4 px-6 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {appointment.type}
-                        </div>
-                      </td>
-                      <td className="py-4 px-6 whitespace-nowrap">
-                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                          {appointment.status}
-                        </span>
-                      </td>
-                      <td className="py-4 px-6 whitespace-nowrap text-sm">
-                        <button className="text-indigo-600 hover:text-indigo-900 mr-3">
-                          View
-                        </button>
-                        <button className="text-gray-600 hover:text-gray-900">
-                          Edit
-                        </button>
-                      </td>
+              {todaysAppointments.length === 0 ? (
+                <div className="p-6 text-center text-gray-500">
+                  No appointments scheduled for today
+                </div>
+              ) : (
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Patient
+                      </th>
+                      <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Time
+                      </th>
+                      <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Type
+                      </th>
+                      <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Action
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {todaysAppointments.map(appointment => (
+                      <tr key={appointment._id} className="hover:bg-gray-50">
+                        <td className="py-4 px-6 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">
+                            {appointment.patient.name}
+                          </div>
+                        </td>
+                        <td className="py-4 px-6 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {appointment.time}
+                          </div>
+                        </td>
+                        <td className="py-4 px-6 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {appointment.reason}
+                          </div>
+                        </td>
+                        <td className="py-4 px-6 whitespace-nowrap">
+                          <span
+                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                              appointment.status === "scheduled"
+                                ? "bg-green-100 text-green-800"
+                                : appointment.status === "completed"
+                                ? "bg-blue-100 text-blue-800"
+                                : "bg-red-100 text-red-800"
+                            }`}
+                          >
+                            {appointment.status.charAt(0).toUpperCase() +
+                              appointment.status.slice(1)}
+                          </span>
+                        </td>
+                        <td className="py-4 px-6 whitespace-nowrap text-sm">
+                          <button className="text-indigo-600 hover:text-indigo-900 mr-3">
+                            View
+                          </button>
+                          <button className="text-gray-600 hover:text-gray-900">
+                            Edit
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
 
@@ -294,41 +410,48 @@ const DoctorDashboard = () => {
             </div>
 
             <div className="p-6">
-              <div className="space-y-5">
-                {recentPatients.map(patient => (
-                  <div
-                    key={patient.id}
-                    className="flex items-center p-3 rounded-lg hover:bg-gray-50"
-                  >
-                    <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
-                      {patient.name.charAt(0)}
-                    </div>
-                    <div className="ml-4 flex-grow">
-                      <div className="text-sm font-medium text-gray-900">
-                        {patient.name}
+              {recentPatients.length === 0 ? (
+                <div className="text-center text-gray-500">No patients yet</div>
+              ) : (
+                <div className="space-y-5">
+                  {recentPatients.map(patient => (
+                    <div
+                      key={patient.id}
+                      className="flex items-center p-3 rounded-lg hover:bg-gray-50"
+                    >
+                      <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
+                        {patient.name.charAt(0)}
                       </div>
-                      <div className="text-sm text-gray-500">
-                        {patient.age} years • {patient.condition}
+                      <div className="ml-4 flex-grow">
+                        <div className="text-sm font-medium text-gray-900">
+                          {patient.name}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {patient.age !== "N/A"
+                            ? `${patient.age} years • `
+                            : ""}
+                          {patient.condition}
+                        </div>
                       </div>
+                      <button className="text-gray-400 hover:text-gray-500">
+                        <svg
+                          className="h-5 w-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </button>
                     </div>
-                    <button className="text-gray-400 hover:text-gray-500">
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

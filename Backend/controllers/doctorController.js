@@ -67,9 +67,13 @@ const loginDoctor = asyncHandler(async (req, res) => {
 
   // Check for doctor email
   const doctor = await Doctor.findOne({ email });
-
+  // if (!doctor) throw new Error("Invalid email");
   // Verify password
   if (doctor && (await doctor.matchPassword(password))) {
+    console.log("Doctor authenticated, generating token with ID:", doctor._id);
+
+    const token = generateToken(doctor._id);
+    console.log("Token generated successfully");
     res.json({
       _id: doctor._id,
       name: doctor.name,
@@ -78,7 +82,7 @@ const loginDoctor = asyncHandler(async (req, res) => {
       specialization: doctor.specialization,
       profilePhoto: doctor.profilePhoto,
       clinicId: doctor.clinicId,
-      token: generateToken(doctor._id),
+      token: token,
     });
   } else {
     res.status(401);

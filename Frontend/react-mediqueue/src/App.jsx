@@ -18,9 +18,9 @@ const ProtectedRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("authToken") !== null;
 
   // If not authenticated, redirect to home
-  if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
+  // if (!isAuthenticated) {
+  //   return <Navigate to="/" replace />;
+  // }
 
   // If authenticated, render the children components
   return children;
