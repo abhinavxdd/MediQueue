@@ -10,17 +10,21 @@ import HomePage from "./pages/HomePage";
 import PatientDashboard from "./pages/PatientDashboard";
 import DoctorDashboard from "./pages/DoctorDashboard";
 import ClinicDetails from "./pages/ClinicDetails";
+import Appointments from "./pages/Appointments";
 import NotFound from "./pages/NotFound";
+import AppointmentDetails from "./pages/AppointmentDetails";
 
 // Create a protected route component
 const ProtectedRoute = ({ children }) => {
-  // Check if user is authenticated
-  const isAuthenticated = localStorage.getItem("authToken") !== null;
+  // Check if user is authenticated (either patient OR doctor)
+  const isAuthenticated =
+    localStorage.getItem("authToken") !== null ||
+    localStorage.getItem("doctorAuthToken") !== null;
 
   // If not authenticated, redirect to home
-  // if (!isAuthenticated) {
-  //   return <Navigate to="/" replace />;
-  // }
+  if (!isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
 
   // If authenticated, render the children components
   return children;
@@ -43,6 +47,22 @@ function App() {
           }
         />
 
+        <Route
+          path="/appointments"
+          element={
+            <ProtectedRoute>
+              <Appointments />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/appointments"
+          element={
+            <ProtectedRoute>
+              <AppointmentDetails />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/doctor-dashboard"
           element={

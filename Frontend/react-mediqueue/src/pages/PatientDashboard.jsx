@@ -3,10 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import PatientNavbar from "../components/PatientNavbar";
 import NearbyClinics from "../components/NearbyClinics";
 import { getUserProfile } from "../services/authService";
+import { getUserAppointments } from "../services/appointmentService";
 
 const PatientDashboard = () => {
   const [selectedLocation, setSelectedLocation] = useState("Hamirpur");
   const [userData, setUserData] = useState(null);
+  const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -20,10 +22,16 @@ const PatientDashboard = () => {
           return;
         }
 
-        const userProfile = await getUserProfile();
+        // Fetch user profile and appointments in parallel
+        const [userProfile, userAppointments] = await Promise.all([
+          getUserProfile(),
+          getUserAppointments(),
+        ]);
+
         setUserData(userProfile);
+        setAppointments(userAppointments);
       } catch (error) {
-        console.error("Error fetching user profile:", error);
+        console.error("Error fetching user data:", error);
         // If there's an authentication error, redirect to homepage
         if (error.response && error.response.status === 401) {
           navigate("/");
@@ -35,6 +43,33 @@ const PatientDashboard = () => {
 
     fetchUserData();
   }, [navigate]);
+
+  // Get upcoming appointments (future appointments only)
+  const getUpcomingAppointments = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to start of day for accurate comparison
+
+    return appointments
+      .filter(appointment => {
+        const appointmentDate = new Date(appointment.date);
+        return appointmentDate >= today && appointment.status === "scheduled";
+      })
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
+      .slice(0, 3); // Show only the next 3 appointments
+  };
+
+  // Format date for display
+  const formatDate = dateString => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const upcomingAppointments = getUpcomingAppointments();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -81,19 +116,64 @@ const PatientDashboard = () => {
             </div>
 
             <div className="space-y-4">
-              <div className="border-l-4 border-blue-500 pl-4 py-2">
-                <p className="font-medium">Dr. Sarah Johnson</p>
-                <p className="text-sm text-gray-500">Dental Checkup</p>
-                <p className="text-sm text-gray-500">
-                  June 15, 2023 · 10:30 AM
-                </p>
-              </div>
-
-              <div className="border-l-4 border-green-500 pl-4 py-2">
-                <p className="font-medium">Dr. Michael Chen</p>
-                <p className="text-sm text-gray-500">Root Canal Treatment</p>
-                <p className="text-sm text-gray-500">June 22, 2023 · 2:00 PM</p>
-              </div>
+              {loading ? (
+                // Loading skeleton
+                <div className="space-y-3">
+                  {[1, 2, 3].map(item => (
+                    <div
+                      key={item}
+                      className="border-l-4 border-gray-200 pl-4 py-2"
+                    >
+                      <div className="animate-pulse h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                      <div className="animate-pulse h-3 bg-gray-200 rounded w-1/2 mb-1"></div>
+                      <div className="animate-pulse h-3 bg-gray-200 rounded w-2/3"></div>
+                    </div>
+                  ))}
+                </div>
+              ) : upcomingAppointments.length > 0 ? (
+                upcomingAppointments.map(appointment => (
+                  <div
+                    key={appointment._id}
+                    className="border-l-4 border-blue-500 pl-4 py-2"
+                  >
+                    <p className="font-medium">
+                      {appointment.doctor?.name || "Doctor"}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {appointment.reason}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {formatDate(appointment.date)} · {appointment.time}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {appointment.clinic?.name || "Clinic"}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <svg
+                    className="mx-auto h-12 w-12 text-gray-400 mb-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                  <p>No upcoming appointments</p>
+                  <Link
+                    to="/clinic"
+                    className="text-blue-600 hover:underline text-sm"
+                  >
+                    Book your first appointment
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
 
