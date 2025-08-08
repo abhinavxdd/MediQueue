@@ -8,6 +8,7 @@ const {
   getAllDoctors,
   getDoctorById,
   updateAvailability,
+  getDoctorAvailableSlots, // Add this import
 } = require("../controllers/doctorController");
 const { protect, doctorProtect } = require("../middleware/authMiddleware");
 
@@ -19,6 +20,7 @@ router
   .get(doctorProtect, getDoctorProfile)
   .put(doctorProtect, updateDoctorProfile);
 router.get("/:id", getDoctorById);
+router.get("/:id/slots/:date", getDoctorAvailableSlots); // Add this route
 router.put("/:id/availability", doctorProtect, updateAvailability);
 
 module.exports = router;
