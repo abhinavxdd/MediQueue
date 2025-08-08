@@ -11,6 +11,9 @@ import PatientDashboard from "./pages/PatientDashboard";
 import DoctorDashboard from "./pages/DoctorDashboard";
 import ClinicDetails from "./pages/ClinicDetails";
 import NotFound from "./pages/NotFound";
+import About from "./pages/About";
+import Services from "./pages/Services";
+import Contact from "./pages/Contact";
 
 // Create a protected route component
 const ProtectedRoute = ({ children }) => {
@@ -32,6 +35,9 @@ function App() {
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<HomePage />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/contact" element={<Contact />} />
 
         {/* Protected routes */}
         <Route
