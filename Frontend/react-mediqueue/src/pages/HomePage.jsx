@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import { loginUser, loginDoctor, registerUser } from "../services/authService";
+import { Link } from "react-router-dom";
 
 function HomePage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -185,30 +186,30 @@ function HomePage() {
           <div className="text-2xl font-bold text-blue-600">MediQueue</div>
 
           <div className="hidden md:flex space-x-8">
-            <a
-              href="#home"
+            <Link
+              to="/"
               className="text-gray-700 hover:text-blue-600 font-medium"
             >
               Home
-            </a>
-            <a
-              href="#about"
+            </Link>
+            <Link
+              to="/about"
               className="text-gray-700 hover:text-blue-600 font-medium"
             >
               About
-            </a>
-            <a
-              href="#services"
+            </Link>
+            <Link
+              to="/services"
               className="text-gray-700 hover:text-blue-600 font-medium"
             >
               Services
-            </a>
-            <a
-              href="#contact"
+            </Link>
+            <Link
+              to="/contact"
               className="text-gray-700 hover:text-blue-600 font-medium"
             >
               Contact
-            </a>
+            </Link>
           </div>
 
           <div className="flex space-x-4">
