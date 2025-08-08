@@ -27,9 +27,27 @@ export const getDoctorAppointments = async () => {
   }
 };
 
-export const cancelAppointment = async id => {
+export const getAppointmentById = async id => {
   try {
-    const response = await api.put(`/appointments/${id}/cancel`);
+    const response = await api.get(`/appointments/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const updateAppointment = async (id, updateData) => {
+  try {
+    const response = await api.put(`/appointments/${id}`, updateData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const cancelAppointment = async (id, cancelData) => {
+  try {
+    const response = await api.put(`/appointments/${id}/cancel`, cancelData);
     return response.data;
   } catch (error) {
     throw error.response?.data || error.message;

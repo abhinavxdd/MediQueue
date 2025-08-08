@@ -322,6 +322,119 @@ const toggleDoctorStatus = asyncHandler(async (req, res) => {
     isActive: updatedDoctor.isActive,
   });
 });
+const createAppointment = asyncHandler(async (req, res) => {
+  const { doctor, clinic, date, time, reason } = req.body;
+
+  if (!doctor || !clinic || !date || !time || !reason) {
+    res.status(400);
+    throw new Error("Please fill all required fields");
+  }
+
+  // Check if the doctor exists
+  const doctorExists = await Doctor.findById(doctor);
+  if (!doctorExists) {
+    res.status(404);
+    throw new Error("Doctor not found");
+  }
+
+  // Check if the time slot is available
+  const existingAppointment = await Appointment.findOne({
+    doctor,
+    date: new Date(date),
+    time,
+    status: { $ne: "cancelled" },
+  });
+
+  if (existingAppointment) {
+    res.status(400);
+    throw new Error("This time slot is already booked");
+  }
+
+  // Create appointment
+  const appointment = await Appointment.create({
+    patient: req.user._id,
+    doctor,
+    clinic,
+    date: new Date(date),
+    time,
+    reason,
+    status: "scheduled",
+  });
+
+  // Update doctor's available slots - remove the booked slot
+  const appointmentDate = new Date(date).toISOString().split("T")[0];
+
+  // Find and update the doctor's available slots for this date
+  await Doctor.findByIdAndUpdate(doctor, {
+    $pull: {
+      [`availableSlots.${appointmentDate}`]: time,
+    },
+  });
+
+  if (appointment) {
+    const populatedAppointment = await Appointment.findById(appointment._id)
+      .populate("doctor", "name specialization")
+      .populate("clinic", "name address");
+
+    res.status(201).json(populatedAppointment);
+  } else {
+    res.status(400);
+    throw new Error("Invalid appointment data");
+  }
+});
+
+/**
+ * @desc    Get doctor available slots for a specific date
+ * @route   GET /api/doctors/:id/slots/:date
+ * @access  Public
+ */
+const getDoctorAvailableSlots = asyncHandler(async (req, res) => {
+  const { id: doctorId, date } = req.params;
+
+  // Find the doctor
+  const doctor = await Doctor.findById(doctorId);
+
+  if (!doctor) {
+    res.status(404);
+    throw new Error("Doctor not found");
+  }
+
+  // Get existing appointments for this doctor on the specified date
+  const existingAppointments = await Appointment.find({
+    doctor: doctorId,
+    date: new Date(date),
+    status: { $ne: "cancelled" },
+  }).select("time");
+
+  // Extract booked times
+  const bookedTimes = existingAppointments.map(appointment => appointment.time);
+
+  // Default time slots (you can customize this based on doctor's schedule)
+  const defaultSlots = [
+    { id: 1, time: "09:00 AM", available: true },
+    { id: 2, time: "09:30 AM", available: true },
+    { id: 3, time: "10:00 AM", available: true },
+    { id: 4, time: "10:30 AM", available: true },
+    { id: 5, time: "11:00 AM", available: true },
+    { id: 6, time: "11:30 AM", available: true },
+    { id: 7, time: "12:00 PM", available: true },
+    { id: 8, time: "12:30 PM", available: true },
+    { id: 9, time: "02:00 PM", available: true },
+    { id: 10, time: "02:30 PM", available: true },
+    { id: 11, time: "03:00 PM", available: true },
+    { id: 12, time: "03:30 PM", available: true },
+    { id: 13, time: "04:00 PM", available: true },
+    { id: 14, time: "04:30 PM", available: true },
+  ];
+
+  // Mark slots as unavailable if they're already booked
+  const availableSlots = defaultSlots.map(slot => ({
+    ...slot,
+    available: !bookedTimes.includes(slot.time),
+  }));
+
+  res.json(availableSlots);
+});
 
 module.exports = {
   registerDoctor,
@@ -334,4 +447,6 @@ module.exports = {
   getDoctorAppointments,
   addDoctorRating,
   toggleDoctorStatus,
+  createAppointment,
+  getDoctorAvailableSlots, // Add this line
 };
