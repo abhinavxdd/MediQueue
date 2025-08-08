@@ -6,19 +6,21 @@ import {
   Navigate,
 } from "react-router-dom";
 import "./App.css";
+
+// Page imports
 import HomePage from "./pages/HomePage";
 import PatientDashboard from "./pages/PatientDashboard";
 import DoctorDashboard from "./pages/DoctorDashboard";
 import ClinicDetails from "./pages/ClinicDetails";
 import Appointments from "./pages/Appointments";
-import NotFound from "./pages/NotFound";
-
 import AppointmentDetails from "./pages/AppointmentDetails";
-
 import About from "./pages/About";
 import Services from "./pages/Services";
 import Contact from "./pages/Contact";
-
+import MedicalRecords from "./pages/MedicalRecords";
+import Alerts from "./pages/Alerts";
+import History from "./pages/History";
+import NotFound from "./pages/NotFound";
 
 // Create a protected route component
 const ProtectedRoute = ({ children }) => {
@@ -86,6 +88,30 @@ function App() {
           element={
             <ProtectedRoute>
               <ClinicDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/medical-records"
+          element={
+            <ProtectedRoute>
+              <MedicalRecords />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/alerts"
+          element={
+            <ProtectedRoute>
+              <Alerts />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/history"
+          element={
+            <ProtectedRoute>
+              <History />
             </ProtectedRoute>
           }
         />
