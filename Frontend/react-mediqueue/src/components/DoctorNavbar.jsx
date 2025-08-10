@@ -101,6 +101,11 @@ const DoctorNavbar = ({ activeTab, setActiveTab, onLogout }) => {
     }
   };
 
+  const handleTabClick = (tabId) => {
+    setActiveTab(tabId);
+    setShowMobileMenu(false); // Close mobile menu after clicking
+  };
+
   return (
     <nav className="bg-white shadow">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -125,7 +130,7 @@ const DoctorNavbar = ({ activeTab, setActiveTab, onLogout }) => {
               {menuItems.map(item => (
                 <button
                   key={item.id}
-                  onClick={() => setActiveTab(item.id)}
+                  onClick={() => handleTabClick(item.id)}
                   className={`${
                     activeTab === item.id
                       ? "border-blue-500 text-gray-900"
@@ -273,10 +278,7 @@ const DoctorNavbar = ({ activeTab, setActiveTab, onLogout }) => {
             {menuItems.map(item => (
               <button
                 key={item.id}
-                onClick={() => {
-                  setActiveTab(item.id);
-                  setShowMobileMenu(false);
-                }}
+                onClick={() => handleTabClick(item.id)}
                 className={`${
                   activeTab === item.id
                     ? "bg-blue-50 border-blue-500 text-blue-700"

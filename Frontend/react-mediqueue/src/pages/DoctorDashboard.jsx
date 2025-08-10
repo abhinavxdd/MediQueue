@@ -267,6 +267,330 @@ const DoctorDashboard = () => {
   const todaysAppointments = getTodaysAppointments();
   const recentPatients = getRecentPatients();
 
+  const renderContent = () => {
+    switch (activeTab) {
+      case "dashboard":
+        return (
+          <div>
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-gray-900">
+                Welcome, {doctorData?.name || "Doctor"}!
+              </h1>
+              <p className="mt-1 text-lg text-gray-600">
+                Here's your practice overview for today
+              </p>
+            </div>
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              {dashboardStats.map((stat, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-lg shadow-sm p-6 border border-gray-200"
+                >
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0">
+                      {renderIcon(stat.icon, stat.color)}
+                    </div>
+                    <div className="ml-5 w-0 flex-1">
+                      <dl>
+                        <dt className="text-sm font-medium text-gray-500 truncate">
+                          {stat.title}
+                        </dt>
+                        <dd className="text-2xl font-semibold text-gray-900">
+                          {stat.value}
+                        </dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Today's Appointments Section */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-8">
+              <div className="p-6 border-b border-gray-200">
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Today's Appointments
+                </h2>
+              </div>
+              <div className="p-6">
+                {todaysAppointments.length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead>
+                        <tr>
+                          <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Time
+                          </th>
+                          <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Patient
+                          </th>
+                          <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Type
+                          </th>
+                          <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {todaysAppointments.map((appointment) => (
+                          <tr key={appointment._id}>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              {appointment.time}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900">
+                                {appointment.patient.name}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {appointment.reason}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span
+                                className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                  appointment.status === "scheduled"
+                                    ? "bg-green-100 text-green-800"
+                                    : appointment.status === "completed"
+                                    ? "bg-blue-100 text-blue-800"
+                                    : "bg-red-100 text-red-800"
+                                }`}
+                              >
+                                {appointment.status.charAt(0).toUpperCase() +
+                                  appointment.status.slice(1)}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-center">
+                    No appointments scheduled for today
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Recent Patients Section */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+              <div className="p-6 border-b border-gray-200">
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Recent Patients
+                </h2>
+              </div>
+              <div className="p-6">
+                {recentPatients.length > 0 ? (
+                  <div className="space-y-4">
+                    {recentPatients.map((patient) => (
+                      <div
+                        key={patient.id}
+                        className="flex items-center p-3 rounded-lg hover:bg-gray-50"
+                      >
+                        <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
+                          {patient.name.charAt(0)}
+                        </div>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900">
+                            {patient.name}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            Last visit: {patient.lastVisit}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-center">No recent patients</p>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+
+      case "appointments":
+        return (
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">Appointments</h1>
+            <div className="mt-6">
+              {/* Your appointments table */}
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Patient
+                    </th>
+                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Time
+                    </th>
+                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Type
+                    </th>
+                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {appointments.map(appointment => (
+                    <tr key={appointment._id} className="hover:bg-gray-50">
+                      <td className="py-4 px-6 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">
+                          {appointment.patient.name}
+                        </div>
+                      </td>
+                      <td className="py-4 px-6 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {appointment.time}
+                        </div>
+                      </td>
+                      <td className="py-4 px-6 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {appointment.reason}
+                        </div>
+                      </td>
+                      <td className="py-4 px-6 whitespace-nowrap">
+                        <span
+                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            appointment.status === "scheduled"
+                              ? "bg-green-100 text-green-800"
+                              : appointment.status === "completed"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {appointment.status.charAt(0).toUpperCase() +
+                            appointment.status.slice(1)}
+                        </span>
+                      </td>
+                      <td className="py-4 px-6 whitespace-nowrap text-sm">
+                        <button className="text-indigo-600 hover:text-indigo-900 mr-3">
+                          View
+                        </button>
+                        <button className="text-gray-600 hover:text-gray-900">
+                          Edit
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+
+      case "patients":
+        return (
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">Patients</h1>
+            <div className="mt-6">
+              {/* Patients list */}
+              {recentPatients.map(patient => (
+                <div
+                  key={patient.id}
+                  className="flex items-center p-3 rounded-lg hover:bg-gray-50"
+                >
+                  <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
+                    {patient.name.charAt(0)}
+                  </div>
+                  <div className="ml-4 flex-grow">
+                    <div className="text-sm font-medium text-gray-900">
+                      {patient.name}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {patient.age !== "N/A"
+                        ? `${patient.age} years • `
+                        : ""}
+                      {patient.condition}
+                    </div>
+                  </div>
+                  <button className="text-gray-400 hover:text-gray-500">
+                    <svg
+                      className="h-5 w-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "schedule":
+        return (
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">Schedule</h1>
+            <div className="mt-6">
+              {/* Weekly calendar component */}
+              <div className="mt-8 bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="p-6 border-b border-gray-200">
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    Weekly Schedule
+                  </h2>
+                </div>
+                <div className="p-6">
+                  <div className="grid grid-cols-7 gap-2">
+                    {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
+                      (day, index) => (
+                        <div key={index} className="text-center">
+                          <div className="font-medium text-gray-900">{day}</div>
+                          <div
+                            className={`mt-1 rounded-full h-8 w-8 flex items-center justify-center mx-auto ${
+                              index === 2 ? "bg-blue-500 text-white" : "text-gray-700"
+                            }`}
+                          >
+                            {new Date(
+                              new Date().setDate(
+                                new Date().getDate() - new Date().getDay() + index + 1
+                              )
+                            ).getDate()}
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </div>
+                  <div className="mt-6 border-t border-gray-200 pt-6">
+                    <div className="text-center text-gray-500">
+                      Click on a day to view or edit your detailed schedule
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case "messages":
+        return (
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">Messages</h1>
+            <div className="mt-6">
+              <p>Coming soon...</p>
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <DoctorNavbar
@@ -277,220 +601,7 @@ const DoctorDashboard = () => {
       />
 
       <main className="flex-grow container mx-auto px-4 sm:px-6 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Welcome, {doctorData?.name || "Doctor"}!
-          </h1>
-          <p className="mt-1 text-lg text-gray-600">
-            Here's your practice overview for today
-          </p>
-        </div>
-
-        {/* Dashboard Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {dashboardStats.map((stat, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-lg shadow-md p-6 flex items-start"
-            >
-              <div className={`p-3 rounded-lg bg-${stat.color}-100 mr-4`}>
-                {renderIcon(stat.icon, stat.color)}
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-600">
-                  {stat.title}
-                </p>
-                <p className="text-2xl font-semibold text-gray-900">
-                  {stat.value}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Upcoming Appointments */}
-          <div className="lg:col-span-2 bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold text-gray-900">
-                  Today's Appointments
-                </h2>
-                <button className="text-blue-600 hover:text-blue-800">
-                  View All
-                </button>
-              </div>
-            </div>
-
-            <div className="overflow-x-auto">
-              {todaysAppointments.length === 0 ? (
-                <div className="p-6 text-center text-gray-500">
-                  No appointments scheduled for today
-                </div>
-              ) : (
-                <table className="w-full">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Patient
-                      </th>
-                      <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Time
-                      </th>
-                      <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Type
-                      </th>
-                      <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status
-                      </th>
-                      <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Action
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {todaysAppointments.map(appointment => (
-                      <tr key={appointment._id} className="hover:bg-gray-50">
-                        <td className="py-4 px-6 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">
-                            {appointment.patient.name}
-                          </div>
-                        </td>
-                        <td className="py-4 px-6 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
-                            {appointment.time}
-                          </div>
-                        </td>
-                        <td className="py-4 px-6 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
-                            {appointment.reason}
-                          </div>
-                        </td>
-                        <td className="py-4 px-6 whitespace-nowrap">
-                          <span
-                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                              appointment.status === "scheduled"
-                                ? "bg-green-100 text-green-800"
-                                : appointment.status === "completed"
-                                ? "bg-blue-100 text-blue-800"
-                                : "bg-red-100 text-red-800"
-                            }`}
-                          >
-                            {appointment.status.charAt(0).toUpperCase() +
-                              appointment.status.slice(1)}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6 whitespace-nowrap text-sm">
-                          <button className="text-indigo-600 hover:text-indigo-900 mr-3">
-                            View
-                          </button>
-                          <button className="text-gray-600 hover:text-gray-900">
-                            Edit
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-          </div>
-
-          {/* Recent Patients */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold text-gray-900">
-                  Recent Patients
-                </h2>
-                <button className="text-blue-600 hover:text-blue-800">
-                  View All
-                </button>
-              </div>
-            </div>
-
-            <div className="p-6">
-              {recentPatients.length === 0 ? (
-                <div className="text-center text-gray-500">No patients yet</div>
-              ) : (
-                <div className="space-y-5">
-                  {recentPatients.map(patient => (
-                    <div
-                      key={patient.id}
-                      className="flex items-center p-3 rounded-lg hover:bg-gray-50"
-                    >
-                      <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
-                        {patient.name.charAt(0)}
-                      </div>
-                      <div className="ml-4 flex-grow">
-                        <div className="text-sm font-medium text-gray-900">
-                          {patient.name}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {patient.age !== "N/A"
-                            ? `${patient.age} years • `
-                            : ""}
-                          {patient.condition}
-                        </div>
-                      </div>
-                      <button className="text-gray-400 hover:text-gray-500">
-                        <svg
-                          className="h-5 w-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M9 5l7 7-7 7"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Weekly Calendar */}
-        <div className="mt-8 bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900">
-              Weekly Schedule
-            </h2>
-          </div>
-          <div className="p-6">
-            <div className="grid grid-cols-7 gap-2">
-              {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
-                (day, index) => (
-                  <div key={index} className="text-center">
-                    <div className="font-medium text-gray-900">{day}</div>
-                    <div
-                      className={`mt-1 rounded-full h-8 w-8 flex items-center justify-center mx-auto ${
-                        index === 2 ? "bg-blue-500 text-white" : "text-gray-700"
-                      }`}
-                    >
-                      {new Date(
-                        new Date().setDate(
-                          new Date().getDate() - new Date().getDay() + index + 1
-                        )
-                      ).getDate()}
-                    </div>
-                  </div>
-                )
-              )}
-            </div>
-            <div className="mt-6 border-t border-gray-200 pt-6">
-              <div className="text-center text-gray-500">
-                Click on a day to view or edit your detailed schedule
-              </div>
-            </div>
-          </div>
-        </div>
+        {renderContent()}
       </main>
 
       <Footer />

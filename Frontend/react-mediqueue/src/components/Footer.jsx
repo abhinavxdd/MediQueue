@@ -108,45 +108,20 @@ const Footer = () => {
               Our Services
             </h3>
             <ul>
-              <li className="mb-2">
-                <a
-                  href="#"
-                  className="text-gray-600 hover:text-blue-600 transition"
-                >
-                  General Dentistry
-                </a>
+              <li className="mb-2 text-gray-600">
+                General Dentistry
               </li>
-              <li className="mb-2">
-                <a
-                  href="#"
-                  className="text-gray-600 hover:text-blue-600 transition"
-                >
-                  Cosmetic Dentistry
-                </a>
+              <li className="mb-2 text-gray-600">
+                Cosmetic Dentistry
               </li>
-              <li className="mb-2">
-                <a
-                  href="#"
-                  className="text-gray-600 hover:text-blue-600 transition"
-                >
-                  Orthodontics
-                </a>
+              <li className="mb-2 text-gray-600">
+                Orthodontics
               </li>
-              <li className="mb-2">
-                <a
-                  href="#"
-                  className="text-gray-600 hover:text-blue-600 transition"
-                >
-                  Pediatric Dentistry
-                </a>
+              <li className="mb-2 text-gray-600">
+                Pediatric Dentistry
               </li>
-              <li className="mb-2">
-                <a
-                  href="#"
-                  className="text-gray-600 hover:text-blue-600 transition"
-                >
-                  Emergency Services
-                </a>
+              <li className="mb-2 text-gray-600">
+                Emergency Services
               </li>
             </ul>
           </div>
