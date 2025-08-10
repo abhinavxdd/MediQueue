@@ -61,7 +61,7 @@ const Footer = () => {
             <ul>
               <li className="mb-2">
                 <a
-                  href="#"
+                  href="/"
                   className="text-gray-600 hover:text-blue-600 transition"
                 >
                   Home
@@ -69,7 +69,7 @@ const Footer = () => {
               </li>
               <li className="mb-2">
                 <a
-                  href="#"
+                  href="/about"
                   className="text-gray-600 hover:text-blue-600 transition"
                 >
                   About Us
@@ -77,7 +77,7 @@ const Footer = () => {
               </li>
               <li className="mb-2">
                 <a
-                  href="#"
+                  href="/services"
                   className="text-gray-600 hover:text-blue-600 transition"
                 >
                   Services
@@ -85,7 +85,7 @@ const Footer = () => {
               </li>
               <li className="mb-2">
                 <a
-                  href="#"
+                  href="/doctors"
                   className="text-gray-600 hover:text-blue-600 transition"
                 >
                   Doctors
@@ -93,7 +93,7 @@ const Footer = () => {
               </li>
               <li className="mb-2">
                 <a
-                  href="#"
+                  href="/appointments"
                   className="text-gray-600 hover:text-blue-600 transition"
                 >
                   Appointments
