@@ -85,7 +85,7 @@ const Footer = () => {
               </li>
               <li className="mb-2">
                 <a
-                  href="/doctors"
+                  href="#"
                   className="text-gray-600 hover:text-blue-600 transition"
                 >
                   Doctors
