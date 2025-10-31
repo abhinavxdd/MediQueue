@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
+import ThemeToggle from "../components/ThemeToggle";
 import { loginUser, loginDoctor, registerUser } from "../services/authService";
 import { Link } from "react-router-dom";
 
@@ -86,7 +87,7 @@ function HomePage() {
     setSignupPhone("");
   };
 
-  const handleLogin = async e => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
@@ -110,7 +111,7 @@ function HomePage() {
     }
   };
 
-  const handleDoctorLogin = async e => {
+  const handleDoctorLogin = async (e) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
@@ -134,7 +135,7 @@ function HomePage() {
     }
   };
 
-  const handleSignup = async e => {
+  const handleSignup = async (e) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
@@ -179,49 +180,52 @@ function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
       {/* Navigation Bar */}
-      <nav className="bg-white shadow-md py-4 px-6 sticky top-0 z-10">
+      <nav className="bg-white dark:bg-gray-800 shadow-md py-4 px-6 sticky top-0 z-10 transition-colors duration-200">
         <div className="container mx-auto flex justify-between items-center">
-          <div className="text-2xl font-bold text-blue-600">MediQueue</div>
+          <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+            MediQueue
+          </div>
 
           <div className="hidden md:flex space-x-8">
             <Link
               to="/"
-              className="text-gray-700 hover:text-blue-600 font-medium"
+              className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium"
             >
               Home
             </Link>
             <Link
               to="/about"
-              className="text-gray-700 hover:text-blue-600 font-medium"
+              className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium"
             >
               About
             </Link>
             <Link
               to="/services"
-              className="text-gray-700 hover:text-blue-600 font-medium"
+              className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium"
             >
               Services
             </Link>
             <Link
               to="/contact"
-              className="text-gray-700 hover:text-blue-600 font-medium"
+              className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium"
             >
               Contact
             </Link>
           </div>
 
-          <div className="flex space-x-4">
+          <div className="flex space-x-4 items-center">
+            <ThemeToggle />
             <button
               onClick={() => setShowLoginModal(true)}
-              className="px-4 py-2 border border-blue-600 text-blue-600 font-medium rounded-md hover:bg-blue-50 transition"
+              className="px-4 py-2 border border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 font-medium rounded-md hover:bg-blue-50 dark:hover:bg-gray-700 transition"
             >
               Login
             </button>
             <button
               onClick={() => setShowSignupModal(true)}
-              className="px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition"
+              className="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white font-medium rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition"
             >
               Sign Up
             </button>
@@ -232,24 +236,24 @@ function HomePage() {
       {/* Hero Section */}
       <section className="container mx-auto py-16 px-6">
         <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold text-blue-600 mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-blue-600 dark:text-blue-400 mb-4">
             Welcome to MediQueue
           </h1>
-          <p className="text-xl text-gray-600 mb-12">
+          <p className="text-xl text-gray-600 dark:text-gray-400 mb-12">
             Book your dental appointments with ease and convenience
           </p>
 
           <div className="flex flex-col md:flex-row gap-8 justify-center mt-12">
             <button
               onClick={handlePatientPortalClick}
-              className="group bg-white p-8 rounded-xl border border-gray-200 shadow-md hover:shadow-lg transition duration-300 hover:-translate-y-2 w-full md:w-80"
+              className="group bg-white dark:bg-gray-800 p-8 rounded-xl border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition duration-300 hover:-translate-y-2 w-full md:w-80"
             >
               <div className="text-center">
                 <span className="text-5xl mb-4 block">👤</span>
-                <h3 className="text-xl font-semibold text-blue-600 mb-2">
+                <h3 className="text-xl font-semibold text-blue-600 dark:text-blue-400 mb-2">
                   Patient Portal
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   Book appointments and manage your profile
                 </p>
               </div>
@@ -257,14 +261,14 @@ function HomePage() {
 
             <button
               onClick={handleDoctorPortalClick}
-              className="group bg-white p-8 rounded-xl border border-gray-200 shadow-md hover:shadow-lg transition duration-300 hover:-translate-y-2 w-full md:w-80"
+              className="group bg-white dark:bg-gray-800 p-8 rounded-xl border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition duration-300 hover:-translate-y-2 w-full md:w-80"
             >
               <div className="text-center">
                 <span className="text-5xl mb-4 block">👨‍⚕️</span>
-                <h3 className="text-xl font-semibold text-blue-600 mb-2">
+                <h3 className="text-xl font-semibold text-blue-600 dark:text-blue-400 mb-2">
                   Doctor Portal
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   Manage schedules and view appointments
                 </p>
               </div>
@@ -274,36 +278,36 @@ function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="bg-white py-16 px-6">
+      <section className="bg-white dark:bg-gray-800 py-16 px-6 transition-colors duration-200">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center text-blue-600 mb-12">
+          <h2 className="text-3xl font-bold text-center text-blue-600 dark:text-blue-400 mb-12">
             Why Choose MediQueue
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-gray-50 p-8 rounded-xl shadow-md">
+            <div className="bg-gray-50 dark:bg-gray-700 p-8 rounded-xl shadow-md transition-colors duration-200">
               <span className="text-4xl block mb-4 text-center">📅</span>
-              <h3 className="text-xl font-semibold text-blue-600 mb-3 text-center">
+              <h3 className="text-xl font-semibold text-blue-600 dark:text-blue-400 mb-3 text-center">
                 Easy Scheduling
               </h3>
-              <p className="text-gray-600 text-center">
+              <p className="text-gray-600 dark:text-gray-400 text-center">
                 Book appointments with just a few clicks
               </p>
             </div>
-            <div className="bg-gray-50 p-8 rounded-xl shadow-md">
+            <div className="bg-gray-50 dark:bg-gray-700 p-8 rounded-xl shadow-md transition-colors duration-200">
               <span className="text-4xl block mb-4 text-center">🔔</span>
-              <h3 className="text-xl font-semibold text-blue-600 mb-3 text-center">
+              <h3 className="text-xl font-semibold text-blue-600 dark:text-blue-400 mb-3 text-center">
                 Reminders
               </h3>
-              <p className="text-gray-600 text-center">
+              <p className="text-gray-600 dark:text-gray-400 text-center">
                 Get notified about upcoming appointments
               </p>
             </div>
-            <div className="bg-gray-50 p-8 rounded-xl shadow-md">
+            <div className="bg-gray-50 dark:bg-gray-700 p-8 rounded-xl shadow-md transition-colors duration-200">
               <span className="text-4xl block mb-4 text-center">⭐</span>
-              <h3 className="text-xl font-semibold text-blue-600 mb-3 text-center">
+              <h3 className="text-xl font-semibold text-blue-600 dark:text-blue-400 mb-3 text-center">
                 Top Specialists
               </h3>
-              <p className="text-gray-600 text-center">
+              <p className="text-gray-600 dark:text-gray-400 text-center">
                 Connect with qualified healthcare professionals
               </p>
             </div>
@@ -314,14 +318,14 @@ function HomePage() {
       {/* Patient Login Modal */}
       {showLoginModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg max-w-md w-full transition-colors duration-200">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-blue-600">
+              <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                 Patient Login
               </h2>
               <button
                 onClick={handleCloseModal}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
               >
                 <svg
                   className="w-6 h-6"
@@ -348,31 +352,37 @@ function HomePage() {
 
             <form onSubmit={handleLogin}>
               <div className="mb-4">
-                <label htmlFor="email" className="block text-gray-700 mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Email Address
                 </label>
                 <input
                   type="email"
                   id="email"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="your@email.com"
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
 
               <div className="mb-6">
-                <label htmlFor="password" className="block text-gray-700 mb-2">
+                <label
+                  htmlFor="password"
+                  className="block text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Password
                 </label>
                 <input
                   type="password"
                   id="password"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="********"
                   value={password}
-                  onChange={e => setPassword(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </div>
@@ -386,12 +396,15 @@ function HomePage() {
                   />
                   <label
                     htmlFor="remember-me"
-                    className="ml-2 block text-sm text-gray-700"
+                    className="ml-2 block text-sm text-gray-700 dark:text-gray-300"
                   >
                     Remember me
                   </label>
                 </div>
-                <a href="#" className="text-sm text-blue-600 hover:underline">
+                <a
+                  href="#"
+                  className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                >
                   Forgot password?
                 </a>
               </div>
@@ -400,16 +413,21 @@ function HomePage() {
                 type="submit"
                 disabled={isLoading}
                 className={`w-full ${
-                  isLoading ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
+                  isLoading
+                    ? "bg-blue-400"
+                    : "bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
                 } text-white py-2 px-4 rounded-md transition`}
               >
                 {isLoading ? "Signing in..." : "Sign In"}
               </button>
 
               <div className="mt-4 text-center">
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   Don't have an account?{" "}
-                  <a href="#" className="text-blue-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-blue-600 dark:text-blue-400 hover:underline"
+                  >
                     Sign up
                   </a>
                 </p>
@@ -422,12 +440,14 @@ function HomePage() {
       {/* Doctor Login Modal */}
       {showDoctorLoginModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg max-w-md w-full transition-colors duration-200">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-blue-600">Doctor Login</h2>
+              <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                Doctor Login
+              </h2>
               <button
                 onClick={handleCloseDoctorModal}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
               >
                 <svg
                   className="w-6 h-6"
@@ -456,17 +476,17 @@ function HomePage() {
               <div className="mb-4">
                 <label
                   htmlFor="doctor-email"
-                  className="block text-gray-700 mb-2"
+                  className="block text-gray-700 dark:text-gray-300 mb-2"
                 >
                   Email Address
                 </label>
                 <input
                   type="email"
                   id="doctor-email"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="doctor@example.com"
                   value={doctorEmail}
-                  onChange={e => setDoctorEmail(e.target.value)}
+                  onChange={(e) => setDoctorEmail(e.target.value)}
                   required
                 />
               </div>
@@ -474,17 +494,17 @@ function HomePage() {
               <div className="mb-6">
                 <label
                   htmlFor="doctor-password"
-                  className="block text-gray-700 mb-2"
+                  className="block text-gray-700 dark:text-gray-300 mb-2"
                 >
                   Password
                 </label>
                 <input
                   type="password"
                   id="doctor-password"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="********"
                   value={doctorPassword}
-                  onChange={e => setDoctorPassword(e.target.value)}
+                  onChange={(e) => setDoctorPassword(e.target.value)}
                   required
                 />
               </div>
@@ -498,12 +518,15 @@ function HomePage() {
                   />
                   <label
                     htmlFor="doctor-remember-me"
-                    className="ml-2 block text-sm text-gray-700"
+                    className="ml-2 block text-sm text-gray-700 dark:text-gray-300"
                   >
                     Remember me
                   </label>
                 </div>
-                <a href="#" className="text-sm text-blue-600 hover:underline">
+                <a
+                  href="#"
+                  className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                >
                   Forgot password?
                 </a>
               </div>
@@ -512,16 +535,21 @@ function HomePage() {
                 type="submit"
                 disabled={isLoading}
                 className={`w-full ${
-                  isLoading ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
+                  isLoading
+                    ? "bg-blue-400"
+                    : "bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
                 } text-white py-2 px-4 rounded-md transition`}
               >
                 {isLoading ? "Signing in..." : "Sign In"}
               </button>
 
               <div className="mt-4 text-center">
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   Don't have an account?{" "}
-                  <a href="#" className="text-blue-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-blue-600 dark:text-blue-400 hover:underline"
+                  >
                     Contact administration
                   </a>
                 </p>
@@ -534,14 +562,14 @@ function HomePage() {
       {/* Patient Signup Modal */}
       {showSignupModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg max-w-md w-full transition-colors duration-200">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-blue-600">
+              <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                 Create Account
               </h2>
               <button
                 onClick={handleCloseSignupModal}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
               >
                 <svg
                   className="w-6 h-6"
@@ -570,17 +598,17 @@ function HomePage() {
               <div className="mb-4">
                 <label
                   htmlFor="signup-name"
-                  className="block text-gray-700 mb-2"
+                  className="block text-gray-700 dark:text-gray-300 mb-2"
                 >
                   Full Name
                 </label>
                 <input
                   type="text"
                   id="signup-name"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="John Smith"
                   value={signupName}
-                  onChange={e => setSignupName(e.target.value)}
+                  onChange={(e) => setSignupName(e.target.value)}
                   required
                 />
               </div>
@@ -588,17 +616,17 @@ function HomePage() {
               <div className="mb-4">
                 <label
                   htmlFor="signup-email"
-                  className="block text-gray-700 mb-2"
+                  className="block text-gray-700 dark:text-gray-300 mb-2"
                 >
                   Email Address
                 </label>
                 <input
                   type="email"
                   id="signup-email"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="your@email.com"
                   value={signupEmail}
-                  onChange={e => setSignupEmail(e.target.value)}
+                  onChange={(e) => setSignupEmail(e.target.value)}
                   required
                 />
               </div>
@@ -606,17 +634,17 @@ function HomePage() {
               <div className="mb-4">
                 <label
                   htmlFor="signup-phone"
-                  className="block text-gray-700 mb-2"
+                  className="block text-gray-700 dark:text-gray-300 mb-2"
                 >
                   Phone Number
                 </label>
                 <input
                   type="tel"
                   id="signup-phone"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="9876543210"
                   value={signupPhone}
-                  onChange={e => setSignupPhone(e.target.value)}
+                  onChange={(e) => setSignupPhone(e.target.value)}
                   required
                 />
               </div>
@@ -624,17 +652,17 @@ function HomePage() {
               <div className="mb-4">
                 <label
                   htmlFor="signup-password"
-                  className="block text-gray-700 mb-2"
+                  className="block text-gray-700 dark:text-gray-300 mb-2"
                 >
                   Password
                 </label>
                 <input
                   type="password"
                   id="signup-password"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="********"
                   value={signupPassword}
-                  onChange={e => setSignupPassword(e.target.value)}
+                  onChange={(e) => setSignupPassword(e.target.value)}
                   required
                   minLength="6"
                 />
@@ -643,17 +671,17 @@ function HomePage() {
               <div className="mb-6">
                 <label
                   htmlFor="signup-confirm-password"
-                  className="block text-gray-700 mb-2"
+                  className="block text-gray-700 dark:text-gray-300 mb-2"
                 >
                   Confirm Password
                 </label>
                 <input
                   type="password"
                   id="signup-confirm-password"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="********"
                   value={signupConfirmPassword}
-                  onChange={e => setSignupConfirmPassword(e.target.value)}
+                  onChange={(e) => setSignupConfirmPassword(e.target.value)}
                   required
                 />
               </div>
@@ -662,14 +690,16 @@ function HomePage() {
                 type="submit"
                 disabled={isLoading}
                 className={`w-full ${
-                  isLoading ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
+                  isLoading
+                    ? "bg-blue-400"
+                    : "bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
                 } text-white py-2 px-4 rounded-md transition`}
               >
                 {isLoading ? "Creating Account..." : "Create Account"}
               </button>
 
               <div className="mt-4 text-center">
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   Already have an account?{" "}
                   <button
                     type="button"
@@ -677,7 +707,7 @@ function HomePage() {
                       handleCloseSignupModal();
                       setShowLoginModal(true);
                     }}
-                    className="text-blue-600 hover:underline"
+                    className="text-blue-600 dark:text-blue-400 hover:underline"
                   >
                     Sign in
                   </button>

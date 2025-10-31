@@ -65,23 +65,23 @@ const DoctorDashboard = () => {
   }, [navigate]);
 
   // Calculate stats based on actual appointment data
-  const calculateDashboardStats = appointmentsData => {
+  const calculateDashboardStats = (appointmentsData) => {
     const today = new Date().toISOString().split("T")[0]; // Today's date as YYYY-MM-DD
 
     // Count today's appointments
     const todaysAppointments = appointmentsData.filter(
-      appointment =>
+      (appointment) =>
         new Date(appointment.date).toISOString().split("T")[0] === today
     );
 
     // Count total unique patients
     const uniquePatients = [
-      ...new Set(appointmentsData.map(a => a.patient._id)),
+      ...new Set(appointmentsData.map((a) => a.patient._id)),
     ].length;
 
     // Count completed appointments today
     const completedToday = appointmentsData.filter(
-      appointment =>
+      (appointment) =>
         new Date(appointment.date).toISOString().split("T")[0] === today &&
         appointment.status === "completed"
     );
@@ -102,7 +102,7 @@ const DoctorDashboard = () => {
       },
       {
         title: "Pending Reports",
-        value: appointmentsData.filter(a => a.status === "scheduled").length,
+        value: appointmentsData.filter((a) => a.status === "scheduled").length,
         icon: "document",
         color: "yellow",
       },
@@ -120,7 +120,7 @@ const DoctorDashboard = () => {
     const today = new Date().toISOString().split("T")[0];
     return appointments
       .filter(
-        appointment =>
+        (appointment) =>
           new Date(appointment.date).toISOString().split("T")[0] === today
       )
       .sort((a, b) => {
@@ -135,7 +135,7 @@ const DoctorDashboard = () => {
     const patientMap = new Map();
 
     // Create a map of patients with their latest appointment
-    appointments.forEach(appointment => {
+    appointments.forEach((appointment) => {
       const patientId = appointment.patient._id;
       if (
         !patientMap.has(patientId) ||
@@ -154,7 +154,7 @@ const DoctorDashboard = () => {
     });
 
     // Convert map to array
-    patientMap.forEach(patient => uniquePatients.push(patient));
+    patientMap.forEach((patient) => uniquePatients.push(patient));
 
     // Return most recent patients first (up to 5)
     return uniquePatients.slice(0, 5);
@@ -242,20 +242,20 @@ const DoctorDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex justify-center items-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex justify-center items-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 dark:border-blue-400"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex justify-center items-center">
-        <div className="bg-red-50 p-4 rounded-md">
-          <p className="text-red-600">{error}</p>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex justify-center items-center">
+        <div className="bg-red-50 dark:bg-red-900 p-4 rounded-md">
+          <p className="text-red-600 dark:text-red-200">{error}</p>
           <button
             onClick={() => navigate("/")}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md"
+            className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-md"
           >
             Return to Home
           </button>
@@ -273,10 +273,10 @@ const DoctorDashboard = () => {
         return (
           <div>
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
                 Welcome, {doctorData?.name || "Doctor"}!
               </h1>
-              <p className="mt-1 text-lg text-gray-600">
+              <p className="mt-1 text-lg text-gray-600 dark:text-gray-400">
                 Here's your practice overview for today
               </p>
             </div>
@@ -286,7 +286,7 @@ const DoctorDashboard = () => {
               {dashboardStats.map((stat, index) => (
                 <div
                   key={index}
-                  className="bg-white rounded-lg shadow-sm p-6 border border-gray-200"
+                  className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700"
                 >
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
@@ -294,10 +294,10 @@ const DoctorDashboard = () => {
                     </div>
                     <div className="ml-5 w-0 flex-1">
                       <dl>
-                        <dt className="text-sm font-medium text-gray-500 truncate">
+                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
                           {stat.title}
                         </dt>
-                        <dd className="text-2xl font-semibold text-gray-900">
+                        <dd className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
                           {stat.value}
                         </dd>
                       </dl>
@@ -308,44 +308,44 @@ const DoctorDashboard = () => {
             </div>
 
             {/* Today's Appointments Section */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-8">
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-xl font-semibold text-gray-900">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-8">
+              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                   Today's Appointments
                 </h2>
               </div>
               <div className="p-6">
                 {todaysAppointments.length > 0 ? (
                   <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                       <thead>
                         <tr>
-                          <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 bg-gray-50 dark:bg-gray-700 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             Time
                           </th>
-                          <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 bg-gray-50 dark:bg-gray-700 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             Patient
                           </th>
-                          <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 bg-gray-50 dark:bg-gray-700 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             Type
                           </th>
-                          <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 bg-gray-50 dark:bg-gray-700 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             Status
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
+                      <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         {todaysAppointments.map((appointment) => (
                           <tr key={appointment._id}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                               {appointment.time}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm font-medium text-gray-900">
+                              <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                                 {appointment.patient.name}
                               </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                               {appointment.reason}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
@@ -368,7 +368,7 @@ const DoctorDashboard = () => {
                     </table>
                   </div>
                 ) : (
-                  <p className="text-gray-500 text-center">
+                  <p className="text-gray-500 dark:text-gray-400 text-center">
                     No appointments scheduled for today
                   </p>
                 )}
@@ -376,9 +376,9 @@ const DoctorDashboard = () => {
             </div>
 
             {/* Recent Patients Section */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-xl font-semibold text-gray-900">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                   Recent Patients
                 </h2>
               </div>
@@ -388,16 +388,16 @@ const DoctorDashboard = () => {
                     {recentPatients.map((patient) => (
                       <div
                         key={patient.id}
-                        className="flex items-center p-3 rounded-lg hover:bg-gray-50"
+                        className="flex items-center p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
                       >
-                        <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
+                        <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300">
                           {patient.name.charAt(0)}
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                             {patient.name}
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-gray-500 dark:text-gray-400">
                             Last visit: {patient.lastVisit}
                           </div>
                         </div>
@@ -405,7 +405,9 @@ const DoctorDashboard = () => {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500 text-center">No recent patients</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-center">
+                    No recent patients
+                  </p>
                 )}
               </div>
             </div>
@@ -415,44 +417,49 @@ const DoctorDashboard = () => {
       case "appointments":
         return (
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Appointments</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+              Appointments
+            </h1>
             <div className="mt-6">
               {/* Your appointments table */}
               <table className="w-full">
-                <thead className="bg-gray-50">
+                <thead className="bg-gray-50 dark:bg-gray-800">
                   <tr>
-                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Patient
                     </th>
-                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Time
                     </th>
-                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Type
                     </th>
-                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Action
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {appointments.map(appointment => (
-                    <tr key={appointment._id} className="hover:bg-gray-50">
+                  {appointments.map((appointment) => (
+                    <tr
+                      key={appointment._id}
+                      className="hover:bg-gray-50 dark:hover:bg-gray-800"
+                    >
                       <td className="py-4 px-6 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                           {appointment.patient.name}
                         </div>
                       </td>
                       <td className="py-4 px-6 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
+                        <div className="text-sm text-gray-900 dark:text-gray-100">
                           {appointment.time}
                         </div>
                       </td>
                       <td className="py-4 px-6 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
+                        <div className="text-sm text-gray-900 dark:text-gray-100">
                           {appointment.reason}
                         </div>
                       </td>
@@ -460,10 +467,10 @@ const DoctorDashboard = () => {
                         <span
                           className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                             appointment.status === "scheduled"
-                              ? "bg-green-100 text-green-800"
+                              ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
                               : appointment.status === "completed"
-                              ? "bg-blue-100 text-blue-800"
-                              : "bg-red-100 text-red-800"
+                              ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                              : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
                           }`}
                         >
                           {appointment.status.charAt(0).toUpperCase() +
@@ -471,10 +478,10 @@ const DoctorDashboard = () => {
                         </span>
                       </td>
                       <td className="py-4 px-6 whitespace-nowrap text-sm">
-                        <button className="text-indigo-600 hover:text-indigo-900 mr-3">
+                        <button className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3">
                           View
                         </button>
-                        <button className="text-gray-600 hover:text-gray-900">
+                        <button className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">
                           Edit
                         </button>
                       </td>
@@ -489,29 +496,29 @@ const DoctorDashboard = () => {
       case "patients":
         return (
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Patients</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+              Patients
+            </h1>
             <div className="mt-6">
               {/* Patients list */}
-              {recentPatients.map(patient => (
+              {recentPatients.map((patient) => (
                 <div
                   key={patient.id}
-                  className="flex items-center p-3 rounded-lg hover:bg-gray-50"
+                  className="flex items-center p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
                 >
-                  <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
+                  <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300">
                     {patient.name.charAt(0)}
                   </div>
                   <div className="ml-4 flex-grow">
-                    <div className="text-sm font-medium text-gray-900">
+                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                       {patient.name}
                     </div>
-                    <div className="text-sm text-gray-500">
-                      {patient.age !== "N/A"
-                        ? `${patient.age} years • `
-                        : ""}
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      {patient.age !== "N/A" ? `${patient.age} years • ` : ""}
                       {patient.condition}
                     </div>
                   </div>
-                  <button className="text-gray-400 hover:text-gray-500">
+                  <button className="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400">
                     <svg
                       className="h-5 w-5"
                       fill="none"
@@ -535,12 +542,14 @@ const DoctorDashboard = () => {
       case "schedule":
         return (
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Schedule</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+              Schedule
+            </h1>
             <div className="mt-6">
               {/* Weekly calendar component */}
-              <div className="mt-8 bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="p-6 border-b border-gray-200">
-                  <h2 className="text-xl font-semibold text-gray-900">
+              <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                     Weekly Schedule
                   </h2>
                 </div>
@@ -549,15 +558,22 @@ const DoctorDashboard = () => {
                     {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
                       (day, index) => (
                         <div key={index} className="text-center">
-                          <div className="font-medium text-gray-900">{day}</div>
+                          <div className="font-medium text-gray-900 dark:text-gray-100">
+                            {day}
+                          </div>
                           <div
                             className={`mt-1 rounded-full h-8 w-8 flex items-center justify-center mx-auto ${
-                              index === 2 ? "bg-blue-500 text-white" : "text-gray-700"
+                              index === 2
+                                ? "bg-blue-500 text-white"
+                                : "text-gray-700 dark:text-gray-300"
                             }`}
                           >
                             {new Date(
                               new Date().setDate(
-                                new Date().getDate() - new Date().getDay() + index + 1
+                                new Date().getDate() -
+                                  new Date().getDay() +
+                                  index +
+                                  1
                               )
                             ).getDate()}
                           </div>
@@ -565,8 +581,8 @@ const DoctorDashboard = () => {
                       )
                     )}
                   </div>
-                  <div className="mt-6 border-t border-gray-200 pt-6">
-                    <div className="text-center text-gray-500">
+                  <div className="mt-6 border-t border-gray-200 dark:border-gray-700 pt-6">
+                    <div className="text-center text-gray-500 dark:text-gray-400">
                       Click on a day to view or edit your detailed schedule
                     </div>
                   </div>
@@ -579,9 +595,11 @@ const DoctorDashboard = () => {
       case "messages":
         return (
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Messages</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+              Messages
+            </h1>
             <div className="mt-6">
-              <p>Coming soon...</p>
+              <p className="text-gray-600 dark:text-gray-400">Coming soon...</p>
             </div>
           </div>
         );
@@ -592,7 +610,7 @@ const DoctorDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
       <DoctorNavbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}

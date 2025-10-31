@@ -2,17 +2,22 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-50 text-gray-800 py-12">
+    <footer className="bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-200 py-12 transition-colors duration-200">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand/Logo Column */}
           <div className="mb-6 md:mb-0">
-            <h2 className="text-2xl font-bold text-blue-600 mb-4">MediQueue</h2>
-            <p className="text-gray-600 mb-4">
+            <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-4">
+              MediQueue
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
               Making healthcare accessible through seamless appointment booking.
             </p>
             <div className="flex space-x-4 mt-4">
-              <a href="#" className="text-gray-600 hover:text-blue-600">
+              <a
+                href="#"
+                className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+              >
                 <svg
                   className="w-6 h-6"
                   fill="currentColor"
@@ -26,7 +31,10 @@ const Footer = () => {
                   />
                 </svg>
               </a>
-              <a href="#" className="text-gray-600 hover:text-blue-600">
+              <a
+                href="#"
+                className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+              >
                 <svg
                   className="w-6 h-6"
                   fill="currentColor"
@@ -40,7 +48,10 @@ const Footer = () => {
                   />
                 </svg>
               </a>
-              <a href="#" className="text-gray-600 hover:text-blue-600">
+              <a
+                href="#"
+                className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+              >
                 <svg
                   className="w-6 h-6"
                   fill="currentColor"
@@ -55,14 +66,14 @@ const Footer = () => {
 
           {/* Quick Links Column */}
           <div className="mb-6 md:mb-0">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">
+            <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">
               Quick Links
             </h3>
             <ul>
               <li className="mb-2">
                 <a
                   href="/"
-                  className="text-gray-600 hover:text-blue-600 transition"
+                  className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition"
                 >
                   Home
                 </a>
@@ -70,7 +81,7 @@ const Footer = () => {
               <li className="mb-2">
                 <a
                   href="/about"
-                  className="text-gray-600 hover:text-blue-600 transition"
+                  className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition"
                 >
                   About Us
                 </a>
@@ -78,7 +89,7 @@ const Footer = () => {
               <li className="mb-2">
                 <a
                   href="/services"
-                  className="text-gray-600 hover:text-blue-600 transition"
+                  className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition"
                 >
                   Services
                 </a>
@@ -86,7 +97,7 @@ const Footer = () => {
               <li className="mb-2">
                 <a
                   href="#"
-                  className="text-gray-600 hover:text-blue-600 transition"
+                  className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition"
                 >
                   Doctors
                 </a>
@@ -94,7 +105,7 @@ const Footer = () => {
               <li className="mb-2">
                 <a
                   href="/appointments"
-                  className="text-gray-600 hover:text-blue-600 transition"
+                  className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition"
                 >
                   Appointments
                 </a>
@@ -104,23 +115,23 @@ const Footer = () => {
 
           {/* Services Column */}
           <div className="mb-6 md:mb-0">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">
+            <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">
               Our Services
             </h3>
             <ul>
-              <li className="mb-2 text-gray-600">
+              <li className="mb-2 text-gray-600 dark:text-gray-400">
                 General Dentistry
               </li>
-              <li className="mb-2 text-gray-600">
+              <li className="mb-2 text-gray-600 dark:text-gray-400">
                 Cosmetic Dentistry
               </li>
-              <li className="mb-2 text-gray-600">
+              <li className="mb-2 text-gray-600 dark:text-gray-400">
                 Orthodontics
               </li>
-              <li className="mb-2 text-gray-600">
+              <li className="mb-2 text-gray-600 dark:text-gray-400">
                 Pediatric Dentistry
               </li>
-              <li className="mb-2 text-gray-600">
+              <li className="mb-2 text-gray-600 dark:text-gray-400">
                 Emergency Services
               </li>
             </ul>
@@ -128,10 +139,10 @@ const Footer = () => {
 
           {/* Contact Info Column */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">
+            <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">
               Contact Us
             </h3>
-            <p className="flex items-center mb-3 text-gray-600">
+            <p className="flex items-center mb-3 text-gray-600 dark:text-gray-400">
               <svg
                 className="w-5 h-5 mr-2"
                 fill="none"
@@ -154,7 +165,7 @@ const Footer = () => {
               </svg>
               123 Dental Street, Medical City
             </p>
-            <p className="flex items-center mb-3 text-gray-600">
+            <p className="flex items-center mb-3 text-gray-600 dark:text-gray-400">
               <svg
                 className="w-5 h-5 mr-2"
                 fill="none"
@@ -171,7 +182,7 @@ const Footer = () => {
               </svg>
               +1 (123) 456-7890
             </p>
-            <p className="flex items-center mb-3 text-gray-600">
+            <p className="flex items-center mb-3 text-gray-600 dark:text-gray-400">
               <svg
                 className="w-5 h-5 mr-2"
                 fill="none"
@@ -192,16 +203,22 @@ const Footer = () => {
         </div>
 
         {/* Bottom Copyright Section */}
-        <div className="border-t border-gray-200 mt-8 pt-8 text-center text-gray-600">
+        <div className="border-t border-gray-200 dark:border-gray-700 mt-8 pt-8 text-center text-gray-600 dark:text-gray-400 transition-colors duration-200">
           <p>
             &copy; {new Date().getFullYear()} MediQueue. All rights reserved.
           </p>
           <div className="mt-2 flex justify-center space-x-4 text-sm">
-            <a href="#" className="hover:text-blue-600 transition">
+            <a
+              href="#"
+              className="hover:text-blue-600 dark:hover:text-blue-400 transition"
+            >
               Privacy Policy
             </a>
             <span className="text-gray-400">|</span>
-            <a href="#" className="hover:text-blue-600 transition">
+            <a
+              href="#"
+              className="hover:text-blue-600 dark:hover:text-blue-400 transition"
+            >
               Terms of Service
             </a>
           </div>

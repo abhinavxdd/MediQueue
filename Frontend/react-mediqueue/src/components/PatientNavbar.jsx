@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle";
 
 const PatientNavbar = ({ selectedLocation, setSelectedLocation, userData }) => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const PatientNavbar = ({ selectedLocation, setSelectedLocation, userData }) => {
   };
 
   // Function to handle location selection
-  const handleLocationSelect = location => {
+  const handleLocationSelect = (location) => {
     setSelectedLocation(location);
     setShowLocationDropdown(false);
   };
@@ -37,26 +38,28 @@ const PatientNavbar = ({ selectedLocation, setSelectedLocation, userData }) => {
 
   return (
     <>
-      <nav className="bg-white shadow-md py-3 px-6 sticky top-0 z-10">
+      <nav className="bg-white dark:bg-gray-800 shadow-md py-3 px-6 sticky top-0 z-10 transition-colors duration-200">
         <div className="container mx-auto">
           <div className="flex justify-between items-center">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
               <svg
-                className="h-8 w-8 text-blue-600"
+                className="h-8 w-8 text-blue-600 dark:text-blue-400"
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path d="M19.671 8.11l-7.141-7.128c-0.896-0.895-2.349-0.895-3.245 0l-7.138 7.128c-0.896 0.896-0.896 2.349 0 3.245l7.138 7.140c0.896 0.896 2.349 0.896 3.245 0l7.141-7.14c0.896-0.896 0.896-2.349 0-3.245zM12 16c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4z"></path>
               </svg>
-              <span className="text-xl font-bold text-blue-600">MediQueue</span>
+              <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
+                MediQueue
+              </span>
             </Link>
 
             {/* Location Selector - Always visible */}
             <div className="relative hidden sm:block">
               <button
-                className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 px-3 py-1 rounded-md border border-gray-200"
+                className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-1 rounded-md border border-gray-200 dark:border-gray-600 transition-colors duration-200"
                 onClick={() => setShowLocationDropdown(!showLocationDropdown)}
               >
                 <svg
@@ -96,15 +99,15 @@ const PatientNavbar = ({ selectedLocation, setSelectedLocation, userData }) => {
 
               {/* Location Dropdown */}
               {showLocationDropdown && (
-                <div className="absolute mt-1 bg-white shadow-md rounded-md overflow-hidden z-20 w-48">
+                <div className="absolute mt-1 bg-white dark:bg-gray-800 shadow-md rounded-md overflow-hidden z-20 w-48 transition-colors duration-200">
                   {locations.map((location, index) => (
                     <button
                       key={index}
                       className={`block w-full text-left px-4 py-2 text-sm ${
                         selectedLocation === location
-                          ? "bg-blue-50 text-blue-600"
-                          : "text-gray-700 hover:bg-gray-50"
-                      }`}
+                          ? "bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-400"
+                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                      } transition-colors duration-200`}
                       onClick={() => handleLocationSelect(location)}
                     >
                       {location}
@@ -119,7 +122,7 @@ const PatientNavbar = ({ selectedLocation, setSelectedLocation, userData }) => {
               <div className="relative w-full">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                   <svg
-                    className="w-5 h-5 text-gray-500"
+                    className="w-5 h-5 text-gray-500 dark:text-gray-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -134,18 +137,21 @@ const PatientNavbar = ({ selectedLocation, setSelectedLocation, userData }) => {
                 </div>
                 <input
                   type="search"
-                  className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+                  className="block w-full p-2 pl-10 text-sm text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
                   placeholder="Search for doctors, services..."
                   value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
             </div>
 
             <div className="flex items-center space-x-4">
+              {/* Theme Toggle */}
+              <ThemeToggle />
+
               {/* Mobile Search Icon */}
               <button
-                className="md:hidden text-gray-700 hover:text-blue-600"
+                className="md:hidden text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
                 onClick={() => setShowMobileSearch(!showMobileSearch)}
               >
                 <svg
@@ -165,7 +171,7 @@ const PatientNavbar = ({ selectedLocation, setSelectedLocation, userData }) => {
 
               {/* Mobile Location Dropdown */}
               <button
-                className="sm:hidden text-gray-700 hover:text-blue-600"
+                className="sm:hidden text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
                 onClick={() => setShowLocationDropdown(!showLocationDropdown)}
               >
                 <svg
@@ -189,21 +195,21 @@ const PatientNavbar = ({ selectedLocation, setSelectedLocation, userData }) => {
                   className="flex items-center space-x-2 focus:outline-none"
                   onClick={() => setShowProfileMenu(!showProfileMenu)}
                 >
-                  <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                    <span className="text-blue-600 font-medium">
+                  <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center transition-colors duration-200">
+                    <span className="text-blue-600 dark:text-blue-400 font-medium">
                       {getUserInitials()}
                     </span>
                   </div>
                   <div className="hidden md:block text-left">
-                    <p className="text-sm font-medium">
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                       {userData ? userData.name : "Loading..."}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {userData?.role || "Patient"}
                     </p>
                   </div>
                   <svg
-                    className="w-4 h-4 text-gray-500"
+                    className="w-4 h-4 text-gray-500 dark:text-gray-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -219,35 +225,35 @@ const PatientNavbar = ({ selectedLocation, setSelectedLocation, userData }) => {
 
                 {/* Profile Dropdown Menu */}
                 {showProfileMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-20 transition-colors duration-200">
                     <Link
                       to="/patient-profile"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
                       Your Profile
                     </Link>
                     <Link
                       to="/appointments"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
                       Your Appointments
                     </Link>
                     <Link
                       to="/settings"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
                       Settings
                     </Link>
-                    <hr className="my-1 border-gray-200" />
+                    <hr className="my-1 border-gray-200 dark:border-gray-700" />
                     <Link
                       to="/help"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
                       Help Center
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                      className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
                       Sign Out
                     </button>
@@ -263,7 +269,7 @@ const PatientNavbar = ({ selectedLocation, setSelectedLocation, userData }) => {
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                   <svg
-                    className="w-5 h-5 text-gray-500"
+                    className="w-5 h-5 text-gray-500 dark:text-gray-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -278,10 +284,10 @@ const PatientNavbar = ({ selectedLocation, setSelectedLocation, userData }) => {
                 </div>
                 <input
                   type="search"
-                  className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+                  className="block w-full p-2 pl-10 text-sm text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
                   placeholder="Search for doctors, services..."
                   value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
             </div>
@@ -289,15 +295,15 @@ const PatientNavbar = ({ selectedLocation, setSelectedLocation, userData }) => {
 
           {/* Mobile Location Dropdown */}
           {showLocationDropdown && (
-            <div className="sm:hidden mt-3 bg-white rounded-md overflow-hidden z-20">
+            <div className="sm:hidden mt-3 bg-white dark:bg-gray-800 rounded-md overflow-hidden z-20 transition-colors duration-200">
               {locations.map((location, index) => (
                 <button
                   key={index}
                   className={`block w-full text-left px-4 py-2 text-sm ${
                     selectedLocation === location
-                      ? "bg-blue-50 text-blue-600"
-                      : "text-gray-700 hover:bg-gray-50"
-                  }`}
+                      ? "bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-400"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                  } transition-colors duration-200`}
                   onClick={() => handleLocationSelect(location)}
                 >
                   {location}

@@ -54,16 +54,16 @@ const Appointments = () => {
     switch (filter) {
       case "upcoming":
         filtered = appointments.filter(
-          apt => new Date(apt.date) >= today && apt.status === "scheduled"
+          (apt) => new Date(apt.date) >= today && apt.status === "scheduled"
         );
         break;
       case "past":
         filtered = appointments.filter(
-          apt => new Date(apt.date) < today || apt.status === "completed"
+          (apt) => new Date(apt.date) < today || apt.status === "completed"
         );
         break;
       case "cancelled":
-        filtered = appointments.filter(apt => apt.status === "cancelled");
+        filtered = appointments.filter((apt) => apt.status === "cancelled");
         break;
       default:
         filtered = appointments;
@@ -74,7 +74,7 @@ const Appointments = () => {
     setFilteredAppointments(filtered);
   };
 
-  const formatDate = dateString => {
+  const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
       weekday: "long",
@@ -84,7 +84,7 @@ const Appointments = () => {
     });
   };
 
-  const getStatusColor = status => {
+  const getStatusColor = (status) => {
     switch (status) {
       case "scheduled":
         return "bg-green-100 text-green-800";
@@ -97,12 +97,12 @@ const Appointments = () => {
     }
   };
 
-  const handleAppointmentClick = appointment => {
+  const handleAppointmentClick = (appointment) => {
     setSelectedAppointment(appointment);
     setShowDetailModal(true);
   };
 
-  const handleViewDetails = appointmentId => {
+  const handleViewDetails = (appointmentId) => {
     navigate(`/appointment/${appointmentId}`);
   };
 
@@ -113,8 +113,8 @@ const Appointments = () => {
       });
 
       // Update local state
-      setAppointments(prev =>
-        prev.map(apt =>
+      setAppointments((prev) =>
+        prev.map((apt) =>
           apt._id === selectedAppointment._id
             ? { ...apt, status: "cancelled" }
             : apt
@@ -135,20 +135,20 @@ const Appointments = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <PatientNavbar
           selectedLocation={selectedLocation}
           setSelectedLocation={setSelectedLocation}
         />
         <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 dark:border-blue-400"></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <PatientNavbar
         selectedLocation={selectedLocation}
         setSelectedLocation={setSelectedLocation}
@@ -157,15 +157,17 @@ const Appointments = () => {
       <div className="container mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
             My Appointments
           </h1>
-          <p className="text-gray-600">Manage your healthcare appointments</p>
+          <p className="text-gray-600 dark:text-gray-400">
+            Manage your healthcare appointments
+          </p>
         </div>
 
         {/* Filter Tabs */}
-        <div className="bg-white rounded-lg shadow-sm mb-6">
-          <div className="border-b border-gray-200">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm mb-6 border border-gray-200 dark:border-gray-700">
+          <div className="border-b border-gray-200 dark:border-gray-700">
             <nav className="-mb-px flex space-x-8 px-6">
               {[
                 {
@@ -177,7 +179,7 @@ const Appointments = () => {
                   id: "upcoming",
                   label: "Upcoming",
                   count: appointments.filter(
-                    apt =>
+                    (apt) =>
                       new Date(apt.date) >= new Date() &&
                       apt.status === "scheduled"
                   ).length,
@@ -186,7 +188,7 @@ const Appointments = () => {
                   id: "past",
                   label: "Past",
                   count: appointments.filter(
-                    apt =>
+                    (apt) =>
                       new Date(apt.date) < new Date() ||
                       apt.status === "completed"
                   ).length,
@@ -194,17 +196,18 @@ const Appointments = () => {
                 {
                   id: "cancelled",
                   label: "Cancelled",
-                  count: appointments.filter(apt => apt.status === "cancelled")
-                    .length,
+                  count: appointments.filter(
+                    (apt) => apt.status === "cancelled"
+                  ).length,
                 },
-              ].map(tab => (
+              ].map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setFilter(tab.id)}
                   className={`py-4 px-1 border-b-2 font-medium text-sm ${
                     filter === tab.id
-                      ? "border-blue-500 text-blue-600"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      ? "border-blue-500 text-blue-600 dark:text-blue-400"
+                      : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
                   }`}
                 >
                   {tab.label} ({tab.count})
@@ -215,11 +218,11 @@ const Appointments = () => {
         </div>
 
         {/* Appointments List */}
-        <div className="bg-white rounded-lg shadow-sm">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
           {filteredAppointments.length === 0 ? (
             <div className="text-center py-12">
               <svg
-                className="mx-auto h-12 w-12 text-gray-400 mb-4"
+                className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 mb-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -231,33 +234,33 @@ const Appointments = () => {
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                 />
               </svg>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
                 No appointments found
               </h3>
-              <p className="text-gray-500 mb-4">
+              <p className="text-gray-500 dark:text-gray-400 mb-4">
                 {filter === "all"
                   ? "You haven't booked any appointments yet."
                   : `No ${filter} appointments found.`}
               </p>
               <button
                 onClick={() => navigate("/patient-dashboard")}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                className="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600"
               >
                 Book New Appointment
               </button>
             </div>
           ) : (
-            <div className="divide-y divide-gray-200">
-              {filteredAppointments.map(appointment => (
+            <div className="divide-y divide-gray-200 dark:divide-gray-700">
+              {filteredAppointments.map((appointment) => (
                 <div
                   key={appointment._id}
                   onClick={() => handleAppointmentClick(appointment)}
-                  className="p-6 hover:bg-gray-50 cursor-pointer transition-colors"
+                  className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
                 >
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="flex items-center mb-2">
-                        <h3 className="text-lg font-medium text-gray-900 mr-3">
+                        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mr-3">
                           {appointment.doctor?.name || "Doctor"}
                         </h3>
                         <span
@@ -270,10 +273,10 @@ const Appointments = () => {
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 dark:text-gray-400">
                         <div className="flex items-center">
                           <svg
-                            className="w-4 h-4 mr-2 text-gray-400"
+                            className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -290,7 +293,7 @@ const Appointments = () => {
 
                         <div className="flex items-center">
                           <svg
-                            className="w-4 h-4 mr-2 text-gray-400"
+                            className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -307,7 +310,7 @@ const Appointments = () => {
 
                         <div className="flex items-center">
                           <svg
-                            className="w-4 h-4 mr-2 text-gray-400"
+                            className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -323,7 +326,7 @@ const Appointments = () => {
                         </div>
                       </div>
 
-                      <p className="text-sm text-gray-600 mt-2">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
                         <span className="font-medium">Reason:</span>{" "}
                         {appointment.reason}
                       </p>
@@ -331,7 +334,7 @@ const Appointments = () => {
 
                     <div className="ml-4">
                       <svg
-                        className="w-5 h-5 text-gray-400"
+                        className="w-5 h-5 text-gray-400 dark:text-gray-500"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -356,20 +359,20 @@ const Appointments = () => {
       {showDetailModal && selectedAppointment && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
-            className="absolute inset-0 bg-black/50"
+            className="absolute inset-0 bg-black/50 dark:bg-black/70"
             onClick={() => setShowDetailModal(false)}
           ></div>
 
-          <div className="relative bg-white rounded-xl shadow-2xl max-w-md w-full">
+          <div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full border border-gray-200 dark:border-gray-700">
             {/* Header */}
-            <div className="p-6 border-b border-gray-200">
+            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex justify-between items-center">
-                <h3 className="text-xl font-semibold text-gray-900">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                   Appointment Details
                 </h3>
                 <button
                   onClick={() => setShowDetailModal(false)}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                 >
                   <svg
                     className="w-6 h-6"
@@ -392,52 +395,56 @@ const Appointments = () => {
             <div className="p-6">
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-600">
+                  <label className="text-sm font-medium text-gray-600 dark:text-gray-400">
                     Doctor
                   </label>
-                  <p className="text-gray-900">
+                  <p className="text-gray-900 dark:text-gray-100">
                     {selectedAppointment.doctor?.name}
                   </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-600">
+                    <label className="text-sm font-medium text-gray-600 dark:text-gray-400">
                       Date
                     </label>
-                    <p className="text-gray-900">
+                    <p className="text-gray-900 dark:text-gray-100">
                       {formatDate(selectedAppointment.date)}
                     </p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-600">
+                    <label className="text-sm font-medium text-gray-600 dark:text-gray-400">
                       Time
                     </label>
-                    <p className="text-gray-900">{selectedAppointment.time}</p>
+                    <p className="text-gray-900 dark:text-gray-100">
+                      {selectedAppointment.time}
+                    </p>
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-gray-600">
+                  <label className="text-sm font-medium text-gray-600 dark:text-gray-400">
                     Clinic
                   </label>
-                  <p className="text-gray-900">
+                  <p className="text-gray-900 dark:text-gray-100">
                     {selectedAppointment.clinic?.name}
                   </p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     {selectedAppointment.clinic?.address}
                   </p>
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-gray-600">
+                  <label className="text-sm font-medium text-gray-600 dark:text-gray-400">
                     Reason
                   </label>
-                  <p className="text-gray-900">{selectedAppointment.reason}</p>
+                  <p className="text-gray-900 dark:text-gray-100">
+                    {selectedAppointment.reason}
+                  </p>
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-gray-600">
+                  <label className="text-sm font-medium text-gray-600 dark:text-gray-400">
                     Status
                   </label>
                   <span
@@ -453,7 +460,7 @@ const Appointments = () => {
             </div>
 
             {/* Actions - Updated with different options based on status */}
-            <div className="p-6 border-t border-gray-200">
+            <div className="p-6 border-t border-gray-200 dark:border-gray-700">
               {selectedAppointment.status === "scheduled" &&
               new Date(selectedAppointment.date) > new Date() ? (
                 // For scheduled future appointments
@@ -463,13 +470,13 @@ const Appointments = () => {
                       setShowDetailModal(false);
                       alert("Reschedule functionality coming soon!");
                     }}
-                    className="flex-1 px-4 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50"
+                    className="flex-1 px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 border border-blue-600 dark:border-blue-400 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20"
                   >
                     Reschedule
                   </button>
                   <button
                     onClick={() => setShowCancelModal(true)}
-                    className="flex-1 px-4 py-2 text-sm font-medium text-red-600 border border-red-600 rounded-lg hover:bg-red-50"
+                    className="flex-1 px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 border border-red-600 dark:border-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20"
                   >
                     Cancel
                   </button>
@@ -479,7 +486,7 @@ const Appointments = () => {
                 <div className="flex gap-3">
                   <button
                     onClick={() => handleViewDetails(selectedAppointment._id)}
-                    className="flex-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 flex items-center justify-center"
+                    className="flex-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 flex items-center justify-center"
                   >
                     <svg
                       className="w-4 h-4 mr-2"
@@ -498,7 +505,7 @@ const Appointments = () => {
                   </button>
                   <button
                     onClick={() => setShowDetailModal(false)}
-                    className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50"
+                    className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
                   >
                     Close
                   </button>
@@ -507,7 +514,7 @@ const Appointments = () => {
                 // For cancelled or other statuses
                 <button
                   onClick={() => setShowDetailModal(false)}
-                  className="w-full px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="w-full px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
                 >
                   Close
                 </button>
@@ -521,28 +528,28 @@ const Appointments = () => {
       {showCancelModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
-            className="absolute inset-0 bg-black/50"
+            className="absolute inset-0 bg-black/50 dark:bg-black/70"
             onClick={() => setShowCancelModal(false)}
           ></div>
 
-          <div className="relative bg-white rounded-xl shadow-2xl max-w-md w-full">
+          <div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full border border-gray-200 dark:border-gray-700">
             <div className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
                 Cancel Appointment
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
                 Are you sure you want to cancel your appointment with{" "}
                 {selectedAppointment?.doctor?.name}?
               </p>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Reason for cancellation (optional)
                 </label>
                 <textarea
                   value={cancelReason}
-                  onChange={e => setCancelReason(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg p-3 text-sm"
+                  onChange={(e) => setCancelReason(e.target.value)}
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   rows="3"
                   placeholder="Please provide a reason for cancellation..."
                 />
@@ -551,13 +558,13 @@ const Appointments = () => {
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowCancelModal(false)}
-                  className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
                 >
                   Keep Appointment
                 </button>
                 <button
                   onClick={handleCancelAppointment}
-                  className="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700"
+                  className="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-600 dark:bg-red-500 rounded-lg hover:bg-red-700 dark:hover:bg-red-600"
                 >
                   Cancel Appointment
                 </button>

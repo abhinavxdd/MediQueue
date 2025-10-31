@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle";
 
 const DoctorNavbar = ({ activeTab, setActiveTab, onLogout }) => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -14,7 +15,7 @@ const DoctorNavbar = ({ activeTab, setActiveTab, onLogout }) => {
   ];
 
   // Render icons for navigation
-  const renderIcon = iconName => {
+  const renderIcon = (iconName) => {
     switch (iconName) {
       case "home":
         return (
@@ -107,35 +108,35 @@ const DoctorNavbar = ({ activeTab, setActiveTab, onLogout }) => {
   };
 
   return (
-    <nav className="bg-white shadow">
+    <nav className="bg-white dark:bg-gray-800 shadow transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
             {/* Logo */}
             <div className="flex-shrink-0 flex items-center">
               <svg
-                className="h-8 w-8 text-blue-600"
+                className="h-8 w-8 text-blue-600 dark:text-blue-400"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >
                 <path d="M19.671 8.11l-7.141-7.128c-0.896-0.895-2.349-0.895-3.245 0l-7.138 7.128c-0.896 0.896-0.896 2.349 0 3.245l7.138 7.140c0.896 0.896 2.349 0.896 3.245 0l7.141-7.14c0.896-0.896 0.896-2.349 0-3.245zM12 16c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4z"></path>
               </svg>
-              <span className="ml-2 font-bold text-xl text-blue-600">
+              <span className="ml-2 font-bold text-xl text-blue-600 dark:text-blue-400">
                 MediQueue
               </span>
             </div>
 
             {/* Desktop Navigation */}
             <div className="hidden sm:ml-6 sm:flex sm:space-x-4">
-              {menuItems.map(item => (
+              {menuItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => handleTabClick(item.id)}
                   className={`${
                     activeTab === item.id
-                      ? "border-blue-500 text-gray-900"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
+                      ? "border-blue-500 text-gray-900 dark:text-gray-100"
+                      : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
+                  } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200`}
                 >
                   <span className="mr-2">{renderIcon(item.icon)}</span>
                   {item.name}
@@ -144,13 +145,13 @@ const DoctorNavbar = ({ activeTab, setActiveTab, onLogout }) => {
             </div>
           </div>
 
-          {/* Right side - Notifications, Search, and Profile */}
+          {/* Right side - Notifications, Search, Theme Toggle and Profile */}
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
             {/* Search */}
             <div className="relative mx-4">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <svg
-                  className="w-5 h-5 text-gray-500"
+                  className="w-5 h-5 text-gray-500 dark:text-gray-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -165,13 +166,16 @@ const DoctorNavbar = ({ activeTab, setActiveTab, onLogout }) => {
               </div>
               <input
                 type="text"
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md leading-5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
                 placeholder="Search"
               />
             </div>
 
+            {/* Theme Toggle */}
+            <ThemeToggle />
+
             {/* Notification button */}
-            <button className="p-1 rounded-full text-gray-400 hover:text-gray-500 relative">
+            <button className="ml-4 p-1 rounded-full text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 relative">
               <svg
                 className="h-6 w-6"
                 fill="none"
@@ -193,9 +197,9 @@ const DoctorNavbar = ({ activeTab, setActiveTab, onLogout }) => {
               <div>
                 <button
                   onClick={() => setShowProfileMenu(!showProfileMenu)}
-                  className="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition"
+                  className="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 dark:focus:border-gray-600 transition"
                 >
-                  <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
+                  <div className="h-8 w-8 rounded-full bg-blue-500 dark:bg-blue-600 flex items-center justify-center text-white">
                     SJ
                   </div>
                 </button>
@@ -203,31 +207,33 @@ const DoctorNavbar = ({ activeTab, setActiveTab, onLogout }) => {
 
               {/* Profile dropdown panel */}
               {showProfileMenu && (
-                <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 transition-colors duration-200">
                   <div className="py-1" role="menu" aria-orientation="vertical">
-                    <div className="px-4 py-2 border-b border-gray-100">
-                      <p className="text-sm font-medium text-gray-900">
+                    <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-700">
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                         Dr. Sarah Johnson
                       </p>
-                      <p className="text-xs text-gray-500">Dentist</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Dentist
+                      </p>
                     </div>
                     <Link
                       to="/profile"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                       role="menuitem"
                     >
                       Your Profile
                     </Link>
                     <Link
                       to="/settings"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                       role="menuitem"
                     >
                       Settings
                     </Link>
                     <button
                       onClick={onLogout}
-                      className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="w-full text-left block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                       role="menuitem"
                     >
                       Sign out
@@ -240,9 +246,10 @@ const DoctorNavbar = ({ activeTab, setActiveTab, onLogout }) => {
 
           {/* Mobile menu button */}
           <div className="flex items-center sm:hidden">
+            <ThemeToggle />
             <button
               onClick={() => setShowMobileMenu(!showMobileMenu)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+              className="ml-2 inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
             >
               <svg
                 className="h-6 w-6"
@@ -273,17 +280,17 @@ const DoctorNavbar = ({ activeTab, setActiveTab, onLogout }) => {
 
       {/* Mobile menu */}
       {showMobileMenu && (
-        <div className="sm:hidden">
+        <div className="sm:hidden transition-colors duration-200">
           <div className="pt-2 pb-3 space-y-1">
-            {menuItems.map(item => (
+            {menuItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => handleTabClick(item.id)}
                 className={`${
                   activeTab === item.id
-                    ? "bg-blue-50 border-blue-500 text-blue-700"
-                    : "border-transparent text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-                } block pl-3 pr-4 py-2 border-l-4 text-base font-medium w-full text-left`}
+                    ? "bg-blue-50 dark:bg-blue-900 border-blue-500 text-blue-700 dark:text-blue-300"
+                    : "border-transparent text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-300"
+                } block pl-3 pr-4 py-2 border-l-4 text-base font-medium w-full text-left transition-colors duration-200`}
               >
                 <div className="flex items-center">
                   <span className="mr-3">{renderIcon(item.icon)}</span>
@@ -294,18 +301,18 @@ const DoctorNavbar = ({ activeTab, setActiveTab, onLogout }) => {
           </div>
 
           {/* Mobile profile section */}
-          <div className="pt-4 pb-3 border-t border-gray-200">
+          <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
             <div className="flex items-center px-4">
               <div className="flex-shrink-0">
-                <div className="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white">
+                <div className="h-10 w-10 rounded-full bg-blue-500 dark:bg-blue-600 flex items-center justify-center text-white">
                   SJ
                 </div>
               </div>
               <div className="ml-3">
-                <div className="text-base font-medium text-gray-800">
+                <div className="text-base font-medium text-gray-800 dark:text-gray-200">
                   Dr. Sarah Johnson
                 </div>
-                <div className="text-sm font-medium text-gray-500">
+                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
                   doctor@example.com
                 </div>
               </div>
@@ -313,19 +320,19 @@ const DoctorNavbar = ({ activeTab, setActiveTab, onLogout }) => {
             <div className="mt-3 space-y-1">
               <Link
                 to="/profile"
-                className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+                className="block px-4 py-2 text-base font-medium text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 Your Profile
               </Link>
               <Link
                 to="/settings"
-                className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+                className="block px-4 py-2 text-base font-medium text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 Settings
               </Link>
               <button
                 onClick={onLogout}
-                className="w-full text-left block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+                className="w-full text-left block px-4 py-2 text-base font-medium text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 Sign out
               </button>

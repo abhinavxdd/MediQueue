@@ -46,7 +46,7 @@ const PatientDashboard = () => {
     today.setHours(0, 0, 0, 0);
 
     return appointments
-      .filter(appointment => {
+      .filter((appointment) => {
         const appointmentDate = new Date(appointment.date);
         return appointmentDate >= today && appointment.status === "scheduled";
       })
@@ -54,7 +54,7 @@ const PatientDashboard = () => {
       .slice(0, 3);
   };
 
-  const formatDate = dateString => {
+  const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
       weekday: "long",
@@ -65,15 +65,15 @@ const PatientDashboard = () => {
   };
 
   const handleQuickAction = (action) => {
-    switch(action) {
-      case 'records':
-        navigate('/medical-records');
+    switch (action) {
+      case "records":
+        navigate("/medical-records");
         break;
-      case 'alerts':
-        navigate('/alerts');
+      case "alerts":
+        navigate("/alerts");
         break;
-      case 'history':
-        navigate('/history');
+      case "history":
+        navigate("/history");
         break;
       default:
         break;
@@ -83,7 +83,7 @@ const PatientDashboard = () => {
   const upcomingAppointments = getUpcomingAppointments();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
       <PatientNavbar
         selectedLocation={selectedLocation}
         setSelectedLocation={setSelectedLocation}
@@ -94,14 +94,14 @@ const PatientDashboard = () => {
         <div className="mb-8">
           {loading ? (
             <div className="flex items-center">
-              <div className="animate-pulse h-8 w-60 bg-gray-200 rounded"></div>
+              <div className="animate-pulse h-8 w-60 bg-gray-200 dark:bg-gray-700 rounded"></div>
             </div>
           ) : (
             <>
-              <h1 className="text-3xl font-bold text-gray-800">
+              <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">
                 Welcome, {userData?.name || "Patient"}!
               </h1>
-              <p className="text-gray-600 mt-1">
+              <p className="text-gray-600 dark:text-gray-400 mt-1">
                 Here's your health at a glance in {selectedLocation}
               </p>
             </>
@@ -109,14 +109,14 @@ const PatientDashboard = () => {
         </div>
 
         <div className="flex flex-col lg:flex-row gap-6 mb-10">
-          <div className="bg-white rounded-lg shadow p-6 flex-1">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex-1 transition-colors duration-200">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-gray-800">
+              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
                 Upcoming Appointments
               </h2>
               <Link
                 to="/appointments"
-                className="text-sm text-blue-600 hover:underline"
+                className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
               >
                 View all
               </Link>
@@ -125,41 +125,41 @@ const PatientDashboard = () => {
             <div className="space-y-4">
               {loading ? (
                 <div className="space-y-3">
-                  {[1, 2, 3].map(item => (
+                  {[1, 2, 3].map((item) => (
                     <div
                       key={item}
-                      className="border-l-4 border-gray-200 pl-4 py-2"
+                      className="border-l-4 border-gray-200 dark:border-gray-700 pl-4 py-2"
                     >
-                      <div className="animate-pulse h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                      <div className="animate-pulse h-3 bg-gray-200 rounded w-1/2 mb-1"></div>
-                      <div className="animate-pulse h-3 bg-gray-200 rounded w-2/3"></div>
+                      <div className="animate-pulse h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
+                      <div className="animate-pulse h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-1"></div>
+                      <div className="animate-pulse h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
                     </div>
                   ))}
                 </div>
               ) : upcomingAppointments.length > 0 ? (
-                upcomingAppointments.map(appointment => (
+                upcomingAppointments.map((appointment) => (
                   <div
                     key={appointment._id}
-                    className="border-l-4 border-blue-500 pl-4 py-2"
+                    className="border-l-4 border-blue-500 dark:border-blue-400 pl-4 py-2"
                   >
-                    <p className="font-medium">
+                    <p className="font-medium text-gray-900 dark:text-gray-100">
                       {appointment.doctor?.name || "Doctor"}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       {appointment.reason}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       {formatDate(appointment.date)} · {appointment.time}
                     </p>
-                    <p className="text-xs text-gray-400 mt-1">
+                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                       {appointment.clinic?.name || "Clinic"}
                     </p>
                   </div>
                 ))
               ) : (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                   <svg
-                    className="mx-auto h-12 w-12 text-gray-400 mb-4"
+                    className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 mb-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -174,7 +174,7 @@ const PatientDashboard = () => {
                   <p>No upcoming appointments</p>
                   <Link
                     to="/clinic"
-                    className="text-blue-600 hover:underline text-sm"
+                    className="text-blue-600 dark:text-blue-400 hover:underline text-sm"
                   >
                     Book your first appointment
                   </Link>
@@ -183,18 +183,18 @@ const PatientDashboard = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6 flex-1">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex-1 transition-colors duration-200">
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
               Quick Actions
             </h2>
 
             <div className="grid grid-cols-2 gap-4">
-              <button 
-                onClick={() => handleQuickAction('records')}
-                className="flex flex-col items-center justify-center p-4 bg-green-50 hover:bg-green-100 rounded-lg transition"
+              <button
+                onClick={() => handleQuickAction("records")}
+                className="flex flex-col items-center justify-center p-4 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 rounded-lg transition"
               >
                 <svg
-                  className="h-8 w-8 text-green-600 mb-2"
+                  className="h-8 w-8 text-green-600 dark:text-green-400 mb-2"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -206,15 +206,17 @@ const PatientDashboard = () => {
                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                   />
                 </svg>
-                <span className="text-sm font-medium">Medical Records</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Medical Records
+                </span>
               </button>
 
-              <button 
-                onClick={() => handleQuickAction('alerts')}
-                className="flex flex-col items-center justify-center p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition"
+              <button
+                onClick={() => handleQuickAction("alerts")}
+                className="flex flex-col items-center justify-center p-4 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 rounded-lg transition"
               >
                 <svg
-                  className="h-8 w-8 text-purple-600 mb-2"
+                  className="h-8 w-8 text-purple-600 dark:text-purple-400 mb-2"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -226,15 +228,17 @@ const PatientDashboard = () => {
                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                   />
                 </svg>
-                <span className="text-sm font-medium">Alerts</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Alerts
+                </span>
               </button>
 
-              <button 
-                onClick={() => handleQuickAction('history')}
-                className="flex flex-col items-center justify-center p-4 bg-yellow-50 hover:bg-yellow-100 rounded-lg transition"
+              <button
+                onClick={() => handleQuickAction("history")}
+                className="flex flex-col items-center justify-center p-4 bg-yellow-50 dark:bg-yellow-900/20 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 rounded-lg transition"
               >
                 <svg
-                  className="h-8 w-8 text-yellow-600 mb-2"
+                  className="h-8 w-8 text-yellow-600 dark:text-yellow-400 mb-2"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -246,7 +250,9 @@ const PatientDashboard = () => {
                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                <span className="text-sm font-medium">History</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  History
+                </span>
               </button>
             </div>
           </div>

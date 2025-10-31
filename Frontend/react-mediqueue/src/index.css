@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Configure dark mode to use class selector instead of media query */
+@variant dark (.dark &);
+
 /* Popup slide-up animation */
 @keyframes slide-up {
   0% {
