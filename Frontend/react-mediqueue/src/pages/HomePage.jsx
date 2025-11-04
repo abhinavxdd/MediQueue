@@ -424,12 +424,15 @@ function HomePage() {
               <div className="mt-4 text-center">
                 <p className="text-gray-600 dark:text-gray-400">
                   Don't have an account?{" "}
-                  <a
-                    href="#"
+                  <button
+                  onClick={()=>{
+                    handleCloseModal()
+                    setShowSignupModal(true)
+                  }}
                     className="text-blue-600 dark:text-blue-400 hover:underline"
                   >
                     Sign up
-                  </a>
+                  </button>
                 </p>
               </div>
             </form>
